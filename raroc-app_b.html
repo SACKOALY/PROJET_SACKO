@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAROC — Rentabilité ajustée au risque · Vista Group</title>
+<style>
+:root{
+  --ink:#10222e; --ink2:#33475a; --paper:#f6f7f4; --card:#ffffff;
+  --line:#dde3e0; --brand:#0e4d5c; --brand2:#0b3a46; --gold:#b98a2f;
+  --go:#1e7a4f; --cond:#b0761a; --nogo:#a8342c; --mut:#6b7b86;
+  --mono:"IBM Plex Mono","Consolas",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5}
+h1,h2,h3,.serif{font-family:Georgia,"Times New Roman",serif}
+header{background:var(--brand2);color:#fff;padding:18px 28px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+header h1{font-size:1.35rem;font-weight:600;letter-spacing:.3px}
+header .sub{color:#bcd3d9;font-size:.85rem}
+header .ver{margin-left:auto;font-family:var(--mono);font-size:.75rem;color:#8fb3bb}
+nav{background:var(--brand);display:flex;flex-wrap:wrap}
+nav button{background:none;border:none;color:#cfe2e6;padding:12px 20px;cursor:pointer;font-size:.9rem;border-bottom:3px solid transparent}
+nav button:hover{color:#fff}
+nav button.active{color:#fff;border-bottom-color:var(--gold);background:rgba(255,255,255,.06)}
+main{max-width:1200px;margin:0 auto;padding:26px 20px 60px}
+.tab{display:none}.tab.show{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 22px;margin-bottom:18px}
+.card h2{font-size:1.05rem;color:var(--brand2);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--gold);display:inline-block}
+.grid{display:grid;gap:14px 22px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+label{display:block;font-size:.78rem;color:var(--ink2);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:5px;font-size:.95rem;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+input[readonly]{background:#f0f3f0;font-family:var(--mono);color:var(--ink2)}
+input:disabled,select:disabled{background:#eef1ee;color:#9aa8b0;cursor:not-allowed}
+.hint{font-size:.75rem;color:var(--mut);margin-top:3px}
+.btn{background:var(--brand);color:#fff;border:none;padding:11px 24px;border-radius:6px;font-size:.95rem;cursor:pointer;font-weight:600}
+.btn:hover{background:var(--brand2)}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.btn.gold{background:var(--gold)}
+.btn.danger{background:var(--nogo)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.commhead,.commrow{display:grid;grid-template-columns:1fr 130px 250px 42px;gap:10px;align-items:center;margin-bottom:8px}
+.commhead{font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:600;margin-bottom:4px}
+.commhead span{padding:0 2px}
+.commrow input,.commrow select{margin:0}
+.commrow .del{background:#fff;border:1px solid var(--line);color:var(--nogo);border-radius:5px;height:36px;cursor:pointer;font-size:1.1rem;line-height:1}
+.commrow .del:hover{background:#fbeceb}
+@media(max-width:640px){.commhead{display:none}.commrow{grid-template-columns:1fr 1fr;gap:6px}.commrow .del{grid-column:2}}
+.natbanner{border-radius:6px;padding:11px 15px;margin-bottom:16px;font-size:.86rem;display:flex;gap:12px;align-items:center;line-height:1.4}
+.natbanner .b{font-weight:700;text-transform:uppercase;font-size:.68rem;letter-spacing:.6px;padding:4px 9px;border-radius:11px;color:#fff;white-space:nowrap}
+.natbanner.bal{background:#e9f2ee;border:1px solid #bcd8ca;color:#1c3b32} .natbanner.bal .b{background:var(--brand)}
+.natbanner.hb{background:#fdf6e8;border:1px solid #ecd9a8;color:#5c4410} .natbanner.hb .b{background:var(--gold)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;text-align:center}
+.kpi .v{font-family:Georgia,serif;font-size:1.9rem;font-weight:700;color:var(--brand2)}
+.kpi .l{font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin-top:4px}
+.verdict{border-radius:8px;padding:18px 22px;color:#fff;display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.verdict.GO{background:var(--go)} .verdict.COND{background:var(--cond)} .verdict.NOGO{background:var(--nogo)}
+.verdict .big{font-family:Georgia,serif;font-size:1.5rem;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:#eef1ee;text-align:left;padding:8px 10px;font-size:.74rem;text-transform:uppercase;letter-spacing:.4px;color:var(--ink2);border-bottom:2px solid var(--line)}
+td{padding:7px 10px;border-bottom:1px solid var(--line)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-size:.82rem}
+tr.tot td{font-weight:700;background:#f4f6f3;border-top:2px solid var(--brand)}
+.bar{height:22px;border-radius:4px;background:#e5eae6;position:relative;overflow:hidden}
+.bar>i{position:absolute;top:0;left:0;bottom:0;background:var(--brand)}
+.wfrow{display:grid;grid-template-columns:220px 1fr 120px;align-items:center;gap:12px;margin-bottom:8px}
+.wfrow .lab{font-size:.85rem}.wfrow .val{text-align:right;font-family:var(--mono);font-size:.85rem}
+.tagchip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:700;color:#fff}
+.tagchip.GO{background:var(--go)}.tagchip.COND{background:var(--cond)}.tagchip.NOGO{background:var(--nogo)}
+.mono{font-family:var(--mono);font-size:.8rem}
+.doc p{margin-bottom:10px}.doc h3{margin:18px 0 8px;color:var(--brand2);font-size:1rem}
+.doc ol,.doc ul{margin:0 0 10px 22px}.doc li{margin-bottom:4px}
+.doc .formula{background:#f0f3f0;border-left:3px solid var(--gold);padding:10px 14px;font-family:var(--mono);font-size:.82rem;margin:10px 0;overflow-x:auto}
+.doc table{margin:10px 0}
+.notice{background:#fdf6e8;border:1px solid #ecd9a8;border-radius:6px;padding:10px 14px;font-size:.85rem;margin-bottom:14px}
+.err{background:#fbeceb;border:1px solid #e4b6b2;color:var(--nogo)}
+#adminGate{max-width:420px;margin:40px auto}
+.small{font-size:.8rem;color:var(--mut)}
+.editgrid{overflow-x:auto;max-width:100%}
+.editgrid input,.editgrid select{padding:4px 6px;font-size:.8rem;font-family:var(--mono);min-width:70px}
+.scrollTable{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+.scrollTable table{font-size:.8rem}
+.scrollTable th{position:sticky;top:0;z-index:1}
+footer{max-width:1200px;margin:0 auto;padding:14px 20px;color:var(--mut);font-size:.75rem;border-top:1px solid var(--line)}
+#printReport{display:none}
+@media print{
+  body *{visibility:hidden} nav,header,footer,.actions{display:none}
+  #printReport,#printReport *{visibility:visible}
+  #printReport{display:block;position:absolute;top:0;left:0;width:100%;padding:8mm;font-size:10.5px;color:#000}
+  #printReport h1{font-size:16px;border-bottom:2px solid #0b3a46;padding-bottom:4px;margin-bottom:8px}
+  #printReport h2{font-size:12px;margin:10px 0 5px;color:#0b3a46}
+  #printReport table{font-size:8.5px}
+  #printReport td,#printReport th{padding:2px 4px;border:1px solid #999}
+  .pverdict{padding:8px 12px;color:#fff;font-weight:700;margin:8px 0}
+  .pv-GO{background:#1e7a4f}.pv-COND{background:#b0761a}.pv-NOGO{background:#a8342c}
+  .psig{margin-top:20px;display:flex;justify-content:space-between}
+  .psig div{border-top:1px solid #000;width:30%;padding-top:4px;font-size:9px;text-align:center}
+  .pbreak{page-break-before:always}
+}
+@media(max-width:640px){.wfrow{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>RAROC · Rentabilité ajustée au risque</h1>
+  <span class="sub">Vista Group — Outil de pré-tarification et d'aide à la décision crédit</span>
+  <span class="ver" id="verTag">params v—</span>
+</header>
+
+<nav>
+  <button class="active" data-tab="calc">Calcul</button>
+  <button data-tab="result">Résultat</button>
+  <button data-tab="dossier">Dossier <span id="dossierCount" style="background:var(--gold);border-radius:10px;padding:0 7px;font-size:.72rem;margin-left:2px;display:none"></span></button>
+  <button data-tab="audit">Tableau d'audit</button>
+  <button data-tab="hist">Traçabilité</button>
+  <button data-tab="guide">Guide d'utilisation</button>
+  <button data-tab="metho">Note méthodologique</button>
+  <button data-tab="admin">Administration</button>
+</nav>
+
+<main>
+
+<!-- CALCUL -->
+<div class="tab show" id="tab-calc">
+  <div class="notice">Le formulaire s'adapte à la <b>nature de l'opération</b> : les champs sans objet (amortissement, coût de ressource pour le hors-bilan…) sont masqués automatiquement. Les référentiels par filiale et les pondérations sont gérés dans l'onglet <b>Administration</b>. Chaque calcul est horodaté, versionné et détaillé période par période.</div>
+
+  <div class="card">
+    <h2>1 · Identification</h2>
+    <div class="grid g3">
+      <div><label>Analyste / utilisateur</label><input id="f_user" placeholder="Nom de l'analyste"></div>
+      <div><label>Filiale (Business Unit)</label><select id="f_bu"></select></div>
+      <div><label>Nom du client</label><input id="f_client" placeholder="Ex : TM DIFFUSION"></div>
+      <div><label>Type de client</label><select id="f_ctype"><option>CORPORATE</option><option>RETAIL</option><option>SOUVERAIN</option><option>SOCIETE ETAT</option><option>INST. FINANCIERE</option></select></div>
+      <div><label>Secteur d'activité</label><input id="f_sector" placeholder="Ex : Télécommunication"></div>
+      <div><label>Dossier / affaire (optionnel)</label><input id="f_dossier" placeholder="Ex : Financement extension 2026"><div class="hint">Regroupe plusieurs facilités d'un même client</div></div>
+      <div><label>Référence du calcul (optionnel)</label><input id="f_ref" placeholder="Auto si vide"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2 · Caractéristiques de la facilité</h2>
+    <div id="natureBanner" class="natbanner bal"></div>
+    <div class="grid g3">
+      <div><label>Type de facilité</label><select id="f_ftype"></select><div class="hint" id="ftypeHint"></div></div>
+      <div><label id="lbl_amount">Montant</label><input id="f_amount" type="number" min="0" value="500000000"></div>
+      <div><label>Date de mise en place</label><input id="f_start" type="date"></div>
+      <div><label id="lbl_mat">Maturité (mois)</label><input id="f_mat" type="number" min="1" max="120" value="36"></div>
+      <div id="wrap_grace"><label>Différé en capital (mois)</label><input id="f_grace" type="number" min="0" value="0"></div>
+      <div id="wrap_repay"><label>Mode de remboursement</label><select id="f_repay"><option value="infine">In fine</option><option value="lin" selected>Amortissement constant</option><option value="ann">Annuités constantes</option></select></div>
+      <div id="wrap_period"><label>Périodicité de remboursement</label><select id="f_period"><option value="1">Mensuelle</option><option value="3" selected>Trimestrielle</option><option value="6">Semestrielle</option><option value="12">Annuelle</option></select><div class="hint">Fréquence des échéances de capital</div></div>
+      <div id="wrap_gracetype"><label>Type de différé</label><select id="f_gracetype"><option value="partial">Partiel (intérêts payés)</option><option value="total">Total / franchise (intérêts capitalisés)</option></select><div class="hint">Sans objet si différé = 0</div></div>
+      <div id="wrap_residual"><label>Valeur résiduelle / balloon (%)</label><input id="f_residual" type="number" step="0.1" min="0" max="100" value="0"><div class="hint">Part du capital non amortie, réglée à l'échéance (leasing, crédit balloon)</div></div>
+      <div id="wrap_util"><label>Utilisation moyenne (%)</label><input id="f_util" type="number" min="0" max="100" value="100"><div class="hint">Part moyenne de l'autorisation effectivement tirée</div></div>
+      <div id="wrap_ccf"><label id="lbl_ccf">FCEC sur non tiré (%)</label><input id="f_ccf" type="number" min="0" max="100" value="20"><div class="hint" id="ccfHint"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3 · Paramètres de risque</h2>
+    <div class="grid g2">
+      <div><label>Notation Vista</label><select id="f_rating"></select><div class="hint" id="pdHint"></div></div>
+      <div><label>PCD / LGD (%)</label><input id="f_pcd" type="number" step="0.1" min="0" max="100" value="55"><div class="hint">Perte en cas de défaut, calculée avec votre outil dédié — saisie manuelle.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4 · Revenus et coûts</h2>
+    <div class="grid g3">
+      <div><label id="lbl_rate">Taux d'intérêt (%/an)</label><input id="f_rate" type="number" step="0.01" value="11"><div class="hint" id="rateHint"></div></div>
+      <div id="wrap_fund"><label>Coût de la ressource (%/an)</label><input id="f_fund" type="number" step="0.01"><div class="hint">Défaut filiale — modifiable pour ce dossier</div></div>
+      <div><label>Coûts opérationnels (%/an)</label><input id="f_opc" type="number" step="0.01"><div class="hint">Défaut filiale — modifiable pour ce dossier</div></div>
+      <div><label>Ratio de capital appliqué (%)</label><input id="f_capr_show" readonly></div>
+      <div><label>Taux d'imposition appliqué (%)</label><input id="f_tax_show" readonly></div>
+      <div><label>ROE cible / taux butoir (%)</label><input id="f_roe_show" readonly></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>5 · Commissions et frais</h2>
+    <p class="small" style="margin-bottom:6px">Ajoutez librement les commissions applicables au dossier (intitulé + valeur), avec leur mode d'application. Elles s'ajoutent au produit de l'opération et figurent dans la fiche PDF et la traçabilité.</p>
+    <div class="commhead"><span>Intitulé</span><span>Valeur</span><span>Mode d'application</span><span></span></div>
+    <div id="commList"></div>
+    <div class="actions"><button class="btn ghost" onclick="addCommission()">+ Ajouter une commission</button></div>
+    <p class="small" id="commHint" style="margin-top:6px"></p>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="runCalc()">Calculer le RAROC</button>
+    <button class="btn ghost" onclick="resetForm()">Réinitialiser</button>
+  </div>
+</div>
+
+<!-- RESULTAT -->
+<div class="tab" id="tab-result">
+  <div id="noRes" class="notice">Aucun calcul effectué. Renseignez le formulaire dans l'onglet <b>Calcul</b>.</div>
+  <div id="resZone" style="display:none">
+    <div class="verdict" id="verdictBox">
+      <div><div class="big" id="verdictTxt"></div><div id="verdictSub" style="font-size:.9rem;opacity:.92"></div></div>
+      <div style="margin-left:auto;text-align:right"><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;opacity:.8">Référence</div><div class="mono" id="verdictRef" style="color:#fff"></div></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="k_raroc">—</div><div class="l">RAROC annualisé</div></div>
+      <div class="kpi"><div class="v" id="k_hurdle">—</div><div class="l">Taux butoir (ROE cible)</div></div>
+      <div class="kpi"><div class="v" id="k_margin">—</div><div class="l">Marge RAROC</div></div>
+      <div class="kpi"><div class="v" id="k_minrate">—</div><div class="l" id="k_minrate_lbl">Taux client plancher</div></div>
+      <div class="kpi"><div class="v" id="k_el">—</div><div class="l">Perte attendue (vie)</div></div>
+      <div class="kpi"><div class="v" id="k_ec">—</div><div class="l">Capital économique moyen</div></div>
+    </div>
+    <div class="card">
+      <h2>Décomposition du résultat (annualisé, en % de l'EAD moyen)</h2>
+      <div id="waterfall"></div>
+    </div>
+    <div class="card">
+      <h2>Détail des facteurs</h2>
+      <table id="factTable"></table>
+    </div>
+    <div class="actions">
+      <button class="btn gold" onclick="exportPDF()">Exporter la fiche en PDF</button>
+      <button class="btn" onclick="addToDossier()">+ Ajouter cette facilité au dossier</button>
+      <button class="btn ghost" onclick="showTab('audit')">Voir le tableau d'audit</button>
+      <button class="btn ghost" onclick="showTab('calc')">Modifier les hypothèses</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOSSIER -->
+<div class="tab" id="tab-dossier">
+  <div id="noDossier" class="notice">Aucune facilité dans le dossier. Depuis l'onglet <b>Calcul</b>, calculez une facilité puis cliquez <b>« Ajouter cette facilité au dossier »</b> sur la vue Résultat. Répétez pour chaque facilité du dossier.</div>
+  <div id="dossierZone" style="display:none">
+    <div class="verdict" id="dVerdictBox">
+      <div><div class="big" id="dVerdictTxt"></div><div id="dVerdictSub" style="font-size:.9rem;opacity:.92"></div></div>
+      <div style="margin-left:auto;text-align:right"><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;opacity:.8">Dossier</div><div class="mono" id="dVerdictRef" style="color:#fff"></div></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="dk_raroc">—</div><div class="l">RAROC consolidé du dossier</div></div>
+      <div class="kpi"><div class="v" id="dk_hurdle">—</div><div class="l">Taux butoir moyen pondéré</div></div>
+      <div class="kpi"><div class="v" id="dk_margin">—</div><div class="l">Marge RAROC</div></div>
+      <div class="kpi"><div class="v" id="dk_expo">—</div><div class="l">Exposition totale (montants)</div></div>
+      <div class="kpi"><div class="v" id="dk_el">—</div><div class="l">Perte attendue totale</div></div>
+      <div class="kpi"><div class="v" id="dk_ec">—</div><div class="l">Capital économique moyen</div></div>
+    </div>
+    <div class="card">
+      <h2>Facilités du dossier</h2>
+      <div class="editgrid"><table id="dossierTable"></table></div>
+      <p class="small" style="margin-top:8px">Le RAROC consolidé = (somme des résultats nets) ÷ (somme des capitaux-années) — moyenne pondérée par le capital, sans bénéfice de diversification (approche standard, conservatrice).</p>
+    </div>
+    <div class="actions">
+      <button class="btn gold" onclick="printDossierConsolidated()">Rapport dossier (consolidé)</button>
+      <button class="btn gold" onclick="printDossierPerFacility()">Rapport détaillé (une fiche par facilité)</button>
+      <button class="btn ghost" onclick="showTab('calc')">Ajouter une autre facilité</button>
+      <button class="btn danger" onclick="clearDossier()">Vider le dossier</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABLEAU D'AUDIT -->
+<div class="tab" id="tab-audit">
+  <div id="noAudit" class="notice">Aucun calcul effectué. Lancez un calcul depuis l'onglet <b>Calcul</b>.</div>
+  <div id="auditZone" style="display:none">
+    <div class="card">
+      <h2>Tableau de calcul par période</h2>
+      <p class="small" style="margin-bottom:10px">Vue mensuelle détaillée reproduisant la logique de la feuille RarocCalc. Tous les flux sont espérés (pondérés par la survie). Perte attendue incrémentale = EAD × PD marginale × PCD ; Capital = EAD × pondération × ratio de capital. Ligne P0 = mise en place (commissions et intérêts pré-comptés). Pour le hors-bilan, l'EAD est l'équivalent-crédit (montant × CCF) et le coût de ressource est nul.</p>
+      <div class="scrollTable"><table id="auditTable"></table></div>
+      <div class="actions">
+        <button class="btn ghost" onclick="exportPeriodsCSV()">Exporter le tableau (CSV)</button>
+        <button class="btn gold" onclick="exportPDF()">Exporter la fiche + tableau en PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACABILITE -->
+<div class="tab" id="tab-hist">
+  <div class="card">
+    <h2>Journal des calculs</h2>
+    <p class="small" style="margin-bottom:10px">Chaque calcul est enregistré avec un identifiant unique, l'horodatage, l'empreinte des données saisies et la version des paramètres en vigueur. Journal partagé entre utilisateurs (ou local au navigateur en hébergement autonome).</p>
+    <div class="editgrid"><table id="histTable"><thead><tr><th>Référence</th><th>Date</th><th>Analyste</th><th>Client</th><th>Facilité</th><th class="num">Montant</th><th class="num">RAROC</th><th>Décision</th><th>Empreinte</th><th>Params</th></tr></thead><tbody id="histBody"></tbody></table></div>
+    <div class="actions">
+      <button class="btn ghost" onclick="loadHistory()">Actualiser</button>
+      <button class="btn gold" onclick="exportJournalCSV()">Exporter le journal complet (CSV)</button>
+      <label class="btn ghost" style="cursor:pointer;display:inline-flex;align-items:center">Importer un journal (CSV)<input type="file" id="journalFile" accept=".csv" style="display:none" onchange="importJournalCSV(this)"></label>
+      <button class="btn danger" onclick="clearJournal()">Vider le journal local</button>
+    </div>
+    <p class="small" id="journalMsg" style="margin-top:8px"></p>
+  </div>
+</div>
+
+<!-- GUIDE -->
+<div class="tab" id="tab-guide">
+  <div class="card doc">
+    <h2>Guide d'utilisation</h2>
+    <h3>À quoi sert cet outil ?</h3>
+    <p>L'outil calcule le <b>RAROC</b> (Risk-Adjusted Return On Capital) d'une facilité de crédit : le rendement net de l'opération, après coût de la ressource, coûts opérationnels, impôt et <b>perte attendue</b>, rapporté au <b>capital économique</b> immobilisé. Il produit une recommandation (GO / GO sous conditions / NO-GO), le taux client plancher, et un tableau de calcul période par période pour l'audit.</p>
+    <h3>Le formulaire s'adapte à la nature de l'opération</h3>
+    <p>Selon le type de facilité choisi, l'outil reconnaît quatre natures et n'affiche que les champs pertinents :</p>
+    <table>
+      <tr><th>Nature</th><th>Rémunération</th><th>Champs spécifiques</th></tr>
+      <tr><td><b>Crédit amortissable à terme</b><br><span class="small">CMT, leasing, campagne</span></td><td>Taux d'intérêt</td><td>Mode d'amortissement, différé</td></tr>
+      <tr><td><b>Ligne revolving court terme</b><br><span class="small">découvert, spot</span></td><td>Taux d'intérêt</td><td>Utilisation moyenne, FCEC sur non tiré</td></tr>
+      <tr><td><b>Financement pré-compté</b><br><span class="small">escompte, affacturage, ASM</span></td><td>Taux d'escompte</td><td>Intérêts pré-comptés, in fine</td></tr>
+      <tr><td><b>Engagement par signature (hors-bilan)</b><br><span class="small">cautions, avals, Credoc</span></td><td>Taux de commission</td><td>Facteur de conversion CCF — <b>pas de coût de ressource ni d'amortissement</b></td></tr>
+    </table>
+    <h3>Étapes</h3>
+    <ol>
+      <li><b>Identification</b> — analyste (traçabilité), filiale (charge automatiquement ses paramètres), client, secteur.</li>
+      <li><b>Facilité</b> — le type détermine la nature ; les champs sans objet disparaissent. Renseignez montant, date, maturité, et les champs affichés.</li>
+      <li><b>Risque</b> — notation Vista (pilote la courbe de PD) et PCD (LGD) saisie manuellement.</li>
+      <li><b>Revenus / coûts</b> — le libellé du taux s'ajuste (intérêt, escompte ou commission) ; le coût de ressource n'apparaît que pour les opérations de bilan.</li>
+      <li>Cliquez <b>Calculer</b>, consultez <b>Résultat</b> et <b>Tableau d'audit</b>, exportez la <b>fiche PDF</b>.</li>
+    </ol>
+    <h3>Lecture du résultat</h3>
+    <ul>
+      <li><b>RAROC ≥ taux butoir</b> → <span class="tagchip GO">GO</span></li>
+      <li><b>Dans la tolérance</b> → <span class="tagchip COND">GO sous conditions</span></li>
+      <li><b>Sous la tolérance</b> → <span class="tagchip NOGO">NO-GO</span> ; le taux plancher donne le prix minimal.</li>
+    </ul>
+    <h3>Données exemples</h3>
+    <p>Au premier lancement sans données enregistrées, l'outil charge des paramètres de filiales par défaut et quelques calculs exemples (dont un engagement par signature) pour illustrer le fonctionnement.</p>
+  </div>
+</div>
+
+<!-- METHODOLOGIE -->
+<div class="tab" id="tab-metho">
+  <div class="card doc">
+    <h2>Note méthodologique</h2>
+    <h3>1. Définition</h3>
+    <p>Le RAROC rapporte le résultat économique attendu de la facilité, net de toutes charges et de la perte attendue, au capital économique mobilisé :</p>
+    <div class="formula">RAROC = [ (Revenus − Coût ressource − Coûts opé. − Perte attendue) × (1 − IS) + Rendement du capital ] / Capital économique moyen</div>
+    <h3>2. Natures d'opération et traitement bilan / hors-bilan</h3>
+    <p>Quatre natures sont distinguées, avec un traitement économique propre :</p>
+    <ul>
+      <li><b>Bilan — crédit amortissable, revolving, pré-compté</b> : décaissement de trésorerie. Le produit est un intérêt (ou un escompte pré-compté) sur l'encours tiré ; le <b>coût de la ressource s'applique</b> à l'encours tiré. EAD = encours tiré + part non tirée × FCEC (pour le revolving). Capital = EAD × pondération × ratio de capital.</li>
+      <li><b>Hors-bilan — engagement par signature</b> (cautions, avals, Credoc) : aucun décaissement. Le produit est une <b>commission</b> sur le montant garanti ; il n'y a <b>pas de coût de ressource</b>. L'exposition prise en compte pour le capital et la perte attendue est l'<b>équivalent-crédit = montant × CCF</b>. C'est une correction importante : appliquer un coût de refinancement à un engagement non décaissé surestimait le coût des cautions.</li>
+    </ul>
+    <h3>3. Paramètres de risque</h3>
+    <p>La <b>PD</b> provient de la <b>notation Vista</b> (courbe de PD cumulée 1–10 ans). La <b>PCD (LGD)</b> est saisie manuellement (outil de provisionnement).</p>
+    <ul>
+      <li><b>Courbe de survie</b> : PD cumulée annuelle convertie en hasard cumulé H(t) = −ln(1 − PD_cum(t)), interpolé au pas mensuel ; survie S(t) = e^(−H(t)) ; PD marginale du mois t = S(t−1) − S(t).</li>
+      <li><b>EAD dynamique</b> : pour les crédits amortissables, l'exposition suit le tableau d'amortissement réel (in fine, constant, annuités). Pour le hors-bilan, l'équivalent-crédit reste au montant garanti × CCF jusqu'à l'échéance.</li>
+      <li><b>Pondération par la survie</b> : produits et charges récurrents sont multipliés par la probabilité de survie à la date du flux.</li>
+      <li><b>Taux plancher en forme fermée</b> : le RAROC étant affine dans le taux client (intérêt ou commission), le taux plancher (RAROC = ROE cible) est résolu analytiquement.</li>
+    </ul>
+    <h3>4. Composantes</h3>
+    <div class="formula">EL = Σ_t EAD(t) × PD_marginale(t) × PCD
+EC(t) = EAD(t) × Pondération RWA × Ratio de capital cible (filiale)</div>
+    <p>Ratio de capital, coût de ressource, IS et coûts opérationnels sont propres à chaque filiale.</p>
+    <h3>5. Règle de décision</h3>
+    <div class="formula">Marge RAROC = RAROC − Taux butoir (ROE cible)
+GO si Marge ≥ 0 · GO sous conditions si Marge ≥ −Tolérance · NO-GO sinon</div>
+    <h3>6. Gouvernance et traçabilité</h3>
+    <p>Référentiels administrés centralement et versionnés. Chaque calcul enregistre identifiant, horodatage, analyste, empreinte des saisies (FNV-1a) et version des paramètres. La fiche PDF reprend ces références.</p>
+    <h3>7. Limites</h3>
+    <ul>
+      <li>Capital en approche standard (pondérations réglementaires), non en perte inattendue (type Vasicek IRB).</li>
+      <li>PD « through-the-cycle » de l'échelle Vista, sans ajustement conjoncturel.</li>
+      <li>Corrélations de portefeuille et diversification non modélisées au niveau individuel.</li>
+      <li>Le CCF par défaut par facilité (100 % pour les garanties financières, 50 % pour les cautions de marché, 20 % pour le Credoc) est paramétrable en administration et doit être aligné sur la politique interne.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="tab" id="tab-admin">
+  <div id="adminGate" class="card">
+    <h2>Accès administrateur</h2>
+    <p class="small" style="margin-bottom:12px">La gestion des référentiels est réservée. Saisissez le code d'accès.</p>
+    <label>Code d'accès</label>
+    <input type="password" id="adminPin" onkeydown="if(event.key==='Enter')adminLogin()">
+    <div class="actions"><button class="btn" onclick="adminLogin()">Se connecter</button></div>
+    <div id="adminErr" class="notice err" style="display:none;margin-top:12px">Code incorrect.</div>
+  </div>
+
+  <div id="adminZone" style="display:none">
+    <div class="notice">Vous modifiez les <b>référentiels partagés</b> : toute sauvegarde s'applique à tous les utilisateurs et incrémente la version des paramètres. <b>Avertissement</b> : la protection par code s'exécute côté client ; pour une mise en production, adossez cet écran à une authentification serveur.</div>
+
+    <div class="card">
+      <h2>Paramètres par filiale</h2>
+      <p class="small" style="margin-bottom:10px">Ratio de capital cible, coût de la ressource, taux d'imposition, coûts opérationnels et ROE cible (taux butoir), propres à chaque filiale.</p>
+      <div class="editgrid"><table id="buTable"></table></div>
+      <div class="actions"><button class="btn ghost" onclick="addBU()">+ Ajouter une filiale</button></div>
+    </div>
+
+    <div class="card">
+      <h2>Types de facilité — nature, pondération et conversion</h2>
+      <p class="small" style="margin-bottom:10px">La <b>nature</b> pilote le comportement du formulaire et le traitement bilan / hors-bilan. Le <b>CCF</b> s'applique à la part non tirée (revolving) ou à la conversion en équivalent-crédit (signature).</p>
+      <div class="editgrid"><table id="facTable"></table></div>
+    </div>
+
+    <div class="card">
+      <h2>Table des probabilités de défaut cumulées (%) — échelle Vista, horizons 1 à 10 ans</h2>
+      <p class="small" style="margin-bottom:10px">Les PD doivent être croissantes par horizon pour chaque notation (contrôle à l'enregistrement).</p>
+      <div class="editgrid"><table id="pdTable"></table></div>
+    </div>
+
+    <div class="card">
+      <h2>Décision et sécurité</h2>
+      <div class="grid g3">
+        <div><label>Tolérance décision (points de %)</label><input id="a_tol" type="number" step="0.1"><div class="hint">Zone « GO sous conditions » sous le taux butoir</div></div>
+        <div><label>Nouveau code d'accès</label><input id="a_newpin" type="password" placeholder="Laisser vide pour conserver"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="adminSave()">Enregistrer les paramètres (nouvelle version)</button>
+      <button class="btn ghost" onclick="adminLogout()">Se déconnecter</button>
+      <button class="btn danger" onclick="adminReset()">Restaurer les valeurs d'usine</button>
+    </div>
+    <p class="small" id="adminMsg" style="margin-top:10px"></p>
+  </div>
+</div>
+
+</main>
+<footer>Outil RAROC v3.5 (web) — dérivé du classeur « RAROC version 3.0 » et de l'échelle de notation Vista Group. Instrument d'aide à la décision ; ne remplace pas l'analyse crédit ni les contrôles prudentiels.</footer>
+
+<div id="printReport"></div>
+
+<script>
+/* ══════════ RÉFÉRENTIELS PAR DÉFAUT ══════════ */
+const DEFAULT_PD = {
+"1+":[0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.10],
+"1":[0.01,0.03,0.04,0.05,0.06,0.07,0.09,0.10,0.11,0.12],
+"1-":[0.02,0.03,0.05,0.06,0.08,0.10,0.11,0.13,0.15,0.16],
+"2+":[0.02,0.04,0.07,0.09,0.11,0.13,0.15,0.17,0.19,0.22],
+"2":[0.03,0.06,0.09,0.11,0.14,0.17,0.20,0.23,0.25,0.28],
+"2-":[0.04,0.08,0.12,0.15,0.19,0.22,0.26,0.29,0.33,0.36],
+"3+":[0.06,0.10,0.15,0.19,0.24,0.28,0.32,0.37,0.41,0.45],
+"3":[0.08,0.14,0.20,0.25,0.31,0.36,0.41,0.47,0.52,0.57],
+"3-":[0.10,0.18,0.26,0.33,0.40,0.47,0.54,0.60,0.67,0.73],
+"4+":[0.13,0.24,0.34,0.43,0.52,0.61,0.69,0.77,0.86,0.94],
+"4":[0.18,0.31,0.43,0.55,0.67,0.78,0.88,0.99,1.09,1.19],
+"4-":[0.24,0.41,0.56,0.71,0.85,0.99,1.12,1.25,1.38,1.51],
+"5+":[0.32,0.53,0.73,0.91,1.09,1.27,1.43,1.60,1.75,1.91],
+"5":[0.42,0.70,0.94,1.18,1.40,1.62,1.83,2.03,2.22,2.41],
+"5-":[0.56,0.91,1.22,1.51,1.79,2.06,2.32,2.57,2.81,3.05],
+"6+":[0.75,1.19,1.58,1.95,2.30,2.64,2.96,3.28,3.58,3.88],
+"6":[1.00,1.56,2.05,2.51,2.95,3.37,3.77,4.17,4.55,4.92],
+"6-":[1.33,2.03,2.65,3.23,3.78,4.30,4.80,5.29,5.76,6.22],
+"7+":[1.76,2.65,3.43,4.16,4.84,5.49,6.12,6.72,7.30,7.87],
+"7":[2.34,3.45,4.43,5.34,6.19,7.00,7.77,8.51,9.23,9.92],
+"7-":[3.10,4.48,5.70,6.83,7.88,8.87,9.82,10.73,11.60,12.44],
+"8+":[4.09,5.80,7.32,8.71,10.01,11.23,12.38,13.48,14.53,15.54],
+"8":[5.39,7.48,9.35,11.06,12.64,14.12,15.51,16.83,18.09,19.30],
+"8-":[7.06,9.61,11.89,13.96,15.86,17.63,19.30,20.87,22.36,23.77],
+"9+":[9.20,12.29,15.02,17.49,19.75,21.85,23.81,25.66,27.40,29.05],
+"9":[11.91,15.62,18.88,21.81,24.48,26.94,29.23,31.38,33.40,35.30],
+"9-":[15.28,19.68,23.51,26.94,30.04,32.89,35.53,37.99,40.29,42.45],
+"10+":[19.40,24.57,29.04,32.99,36.56,39.81,42.80,45.57,48.15,50.55],
+"10":[24.31,30.34,35.50,40.01,44.05,47.70,51.04,54.11,56.96,59.60],
+"10-":[30.00,36.90,42.74,47.85,52.39,56.46,60.15,63.51,66.59,69.42]
+};
+const APPRE = {
+"1+":["Excellent","Aaa / AAA"],"1":["Excellent","Aa1 / AA+"],"1-":["Excellent","Aa2 / AA"],
+"2+":["Very good","Aa3 / AA-"],"2":["Very good","A / A+"],"2-":["Very good","A3 / A-"],
+"3+":["Good","Baa1 / BBB+"],"3":["Good","Baa1 / BBB+"],"3-":["Good","Baa1 / BBB+"],
+"4+":["Satisfactory","Baa2 / BBB"],"4":["Satisfactory","Baa2 / BBB"],"4-":["Satisfactory","Baa2 / BBB"],
+"5+":["Average","Baa3 / BBB-"],"5":["Average","Baa3 / BBB-"],"5-":["Average","Baa3 / BBB-"],
+"6+":["Acceptable","Ba1 / BB+"],"6":["Acceptable","Ba2 / BB"],"6-":["Acceptable","Ba2 / BB"],
+"7+":["Poor","Ba3 / BB-"],"7":["Poor","Ba3 / BB-"],"7-":["Poor","B1 / B+"],
+"8+":["Weak","B2 / B"],"8":["Weak","B2 / B"],"8-":["Weak","B2 / B"],
+"9+":["Concerning","B3 / B-"],"9":["Concerning","B3 / B-"],"9-":["Concerning","B3 / B-"],
+"10+":["Highly concerning","Caa / CCC"],"10":["Highly concerning","Ca / CC"],"10-":["Highly concerning","C / C"]
+};
+const RATINGS = Object.keys(DEFAULT_PD);
+
+// Natures : comportement du formulaire et traitement économique
+const NATURES = {
+ terme:{lab:"Crédit amortissable à terme",badge:"Bilan",cls:"bal",onBal:true,imode:"post",
+   rateLabel:"Taux d'intérêt (%/an)",feeLabel:"Commission de déblocage (%)",rateHint:"Appliqué à l'encours restant dû",
+   show:{repay:true,grace:true,period:true,gracetype:true,residual:true,util:false,ccf:false,fund:true,feerun:true},lock:{util:100},
+   desc:"Crédit décaissé et amorti sur la durée. Intérêts sur l'encours, coût de ressource applicable."},
+ revolving:{lab:"Ligne court terme à tirage variable",badge:"Bilan",cls:"bal",onBal:true,imode:"post",
+   rateLabel:"Taux d'intérêt (%/an)",feeLabel:"Commission de mise en place (%)",rateHint:"Appliqué à l'encours tiré",
+   show:{repay:false,grace:false,util:true,ccf:true,fund:true,feerun:true},lock:{repay:"infine"},
+   desc:"Autorisation tirée de façon variable. L'utilisation moyenne et le FCEC sur la part non tirée sont déterminants."},
+ escompte:{lab:"Financement court terme pré-compté",badge:"Bilan",cls:"bal",onBal:true,imode:"pre",
+   rateLabel:"Taux d'escompte (%/an)",feeLabel:"Commission de mise en place (%)",rateHint:"Intérêts pré-comptés à la mise en place",
+   show:{repay:false,grace:false,util:false,ccf:false,fund:true,feerun:false},lock:{repay:"infine",util:100},
+   desc:"Avance auto-liquidative, intérêts pré-comptés. Remboursement in fine à l'échéance."},
+ signature:{lab:"Engagement par signature — hors-bilan",badge:"Hors-bilan",cls:"hb",onBal:false,imode:"post",
+   rateLabel:"Taux de commission (%/an)",feeLabel:"Commission de mise en place (%)",rateHint:"Commission annuelle sur le montant garanti",
+   show:{repay:false,grace:false,util:false,ccf:true,fund:false,feerun:false},lock:{repay:"infine",util:100},
+   desc:"Aucun décaissement : rémunéré par commission, sans coût de ressource ni amortissement. Capital et perte attendue portent sur l'équivalent-crédit = montant × CCF."}
+};
+
+// name, rwa, ccf, nature
+const FACILITIES = [
+ {n:"Découvert / Facilité de caisse", rwa:1.00, ccf:20,  nature:"revolving"},
+ {n:"Spot / Crédit de trésorerie",    rwa:1.00, ccf:20,  nature:"revolving"},
+ {n:"Escompte commercial",            rwa:1.00, ccf:100, nature:"escompte"},
+ {n:"Affacturage",                    rwa:1.00, ccf:100, nature:"escompte"},
+ {n:"Crédit documentaire (Credoc)",   rwa:0.50, ccf:20,  nature:"signature"},
+ {n:"Traite avalisée / Avals",        rwa:0.75, ccf:100, nature:"signature"},
+ {n:"Caution douanière et fiscale",   rwa:0.30, ccf:100, nature:"signature"},
+ {n:"Caution de marché",              rwa:0.50, ccf:50,  nature:"signature"},
+ {n:"Autre caution",                  rwa:0.50, ccf:50,  nature:"signature"},
+ {n:"Avance sur marché / ASM",        rwa:1.00, ccf:100, nature:"escompte"},
+ {n:"Crédit de campagne",             rwa:1.00, ccf:100, nature:"terme"},
+ {n:"CMT — Crédit à moyen terme",     rwa:1.00, ccf:100, nature:"terme"},
+ {n:"Crédit-bail / Leasing",          rwa:1.00, ccf:100, nature:"terme"}
+];
+const DEFAULT_PARAMS = {
+  version:1, updatedAt:null, updatedBy:"défaut usine", pinHash:null,
+  tolerance:2.0,
+  bus:[
+    {n:"Vista Bank Burkina (ex BICIAB)", roe:20, capRatio:11.5, fundRate:4.3, tax:27.5, opc:1.0},
+    {n:"Vista Bank Burkina (ex SGBF)",   roe:20, capRatio:11.5, fundRate:4.3, tax:27.5, opc:1.0},
+    {n:"Vista GUI",                      roe:20, capRatio:12.0, fundRate:6.5, tax:35.0, opc:1.5},
+    {n:"Vista Bank Guinée",              roe:20, capRatio:12.0, fundRate:6.5, tax:35.0, opc:1.5},
+    {n:"Vista Bank Gambia",              roe:20, capRatio:11.0, fundRate:5.0, tax:27.0, opc:1.3},
+    {n:"Vista Bank Sierra Leone",        roe:29, capRatio:12.5, fundRate:8.0, tax:25.0, opc:1.8},
+    {n:"Vista Bank Moçambique",          roe:20, capRatio:12.0, fundRate:7.0, tax:32.0, opc:1.6}
+  ],
+  facilities: FACILITIES.map(f=>({n:f.n, rwa:f.rwa, ccf:f.ccf, nature:f.nature})),
+  pd: DEFAULT_PD
+};
+
+/* ══════════ STOCKAGE ══════════ */
+const usingShared = (typeof window!=="undefined" && typeof window.storage!=="undefined");
+const store = {
+  async get(key){
+    if(usingShared){ try{return await window.storage.get(key,true);}catch(e){return null;} }
+    try{const v=localStorage.getItem(key);return v!=null?{value:v}:null;}catch(e){return null;}
+  },
+  async set(key,val){
+    if(usingShared){ try{return await window.storage.set(key,val,true);}catch(e){return null;} }
+    try{localStorage.setItem(key,val);return {value:val};}catch(e){return null;}
+  }
+};
+
+let PARAMS = JSON.parse(JSON.stringify(DEFAULT_PARAMS));
+let lastResult = null;
+let adminOK = false;
+
+function fnv(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=(h*0x01000193)>>>0;}return h.toString(16).padStart(8,"0");}
+function esc(s){return String(s==null?"":s).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));}
+function fmtN(x){return new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(x);}
+function fmtP(x,d){d=d==null?2:d;return (isFinite(x)?x.toFixed(d):"—")+" %";}
+function decLabel(d){return d==="GO"?"GO":d==="COND"?"GO SOUS CONDITIONS":"NO-GO";}
+function facNature(fac){return NATURES[fac.nature]||NATURES.terme;}
+
+async function loadParams(){
+  const r=await store.get("raroc-params");
+  if(r&&r.value){try{PARAMS=JSON.parse(r.value);}catch(e){}}
+  if(!PARAMS.facilities){PARAMS.facilities=DEFAULT_PARAMS.facilities;}
+  PARAMS.facilities.forEach((f,i)=>{ if(!f.nature) f.nature=(FACILITIES[i]?FACILITIES[i].nature:"terme"); });
+  if(!PARAMS.pd){PARAMS.pd=DEFAULT_PD;}
+  if(!PARAMS.pinHash){PARAMS.pinHash=fnv("VISTA2026");}
+  document.getElementById("verTag").textContent="params v"+PARAMS.version+(usingShared?"":" · local");
+  buildForm();
+}
+async function saveParams(){
+  await store.set("raroc-params",JSON.stringify(PARAMS));
+  document.getElementById("verTag").textContent="params v"+PARAMS.version+(usingShared?"":" · local");
+}
+async function getLog(){
+  const r=await store.get("raroc-audit");
+  if(r&&r.value){try{return JSON.parse(r.value);}catch(e){}}
+  return [];
+}
+async function appendLog(rec){
+  let log=await getLog(); log.unshift(rec); if(log.length>200)log=log.slice(0,200);
+  await store.set("raroc-audit",JSON.stringify(log));
+}
+async function loadHistory(){
+  const tb=document.getElementById("histBody"); tb.innerHTML="";
+  const log=await getLog();
+  if(!log.length){tb.innerHTML='<tr><td colspan="9" class="small">Aucun calcul enregistré.</td></tr>';return;}
+  for(const r of log){
+    tb.insertAdjacentHTML("beforeend",`<tr><td class="mono">${r.id}</td><td>${r.date}</td><td>${esc(r.user)}</td><td>${esc(r.client)}</td><td>${esc(r.facility||"—")}</td><td class="num">${fmtN(r.amount)}</td><td class="num">${r.raroc.toFixed(2)} %</td><td><span class="tagchip ${r.dec}">${decLabel(r.dec)}</span></td><td class="mono">${r.hash}</td><td class="mono">v${r.pver}</td></tr>`);
+  }
+}
+
+/* ══════════ DONNÉES EXEMPLES ══════════ */
+/* ══════════ EXPORT / IMPORT DU JOURNAL (CSV cumulatif) ══════════ */
+const JOURNAL_COLS=["id","date","dossier","user","bu","client","facility","nature","amount","months","rating","pcd","rate","raroc","hurdle","minRate","dec","hash","pver"];
+const JOURNAL_HEAD={id:"Reference",date:"Date",dossier:"Dossier",user:"Analyste",bu:"Filiale",client:"Client",facility:"Type facilite",nature:"Nature",amount:"Montant",months:"Maturite (mois)",rating:"Notation",pcd:"PCD %",rate:"Taux/commission %",raroc:"RAROC %",hurdle:"Butoir %",minRate:"Taux plancher %",dec:"Decision",hash:"Empreinte",pver:"Version params"};
+function csvCell(v){ v=(v==null?"":String(v)); return '"'+v.replace(/"/g,'""')+'"'; }
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,""); const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else { if(c==='"')q=true; else if(c===';'){row.push(cur);cur="";} else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur="";} else if(c==='\r'){} else cur+=c; }
+  }
+  if(cur!==""||row.length){row.push(cur);rows.push(row);}
+  return rows.filter(r=>r.length>1||(r.length===1&&r[0]!==""));
+}
+async function exportJournalCSV(){
+  const log=await getLog();
+  if(!log.length){document.getElementById("journalMsg").textContent="Journal vide — aucun calcul à exporter.";return;}
+  const lines=[JOURNAL_COLS.map(c=>csvCell(JOURNAL_HEAD[c])).join(";")];
+  for(const r of log) lines.push(JOURNAL_COLS.map(c=>csvCell(r[c])).join(";"));
+  const csv="\uFEFF"+lines.join("\r\n");
+  try{
+    const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+    a.download="RAROC_journal_"+new Date().toISOString().slice(0,10)+".csv";
+    document.body.appendChild(a);a.click();a.remove();
+    document.getElementById("journalMsg").textContent=`Journal exporté : ${log.length} calcul(s).`;
+  }catch(e){alert("Export bloqué par l'environnement.");}
+}
+async function importJournalCSV(input){
+  const file=input.files&&input.files[0]; if(!file)return;
+  const text=await file.text(); input.value="";
+  const rows=parseCSV(text);
+  if(rows.length<2){document.getElementById("journalMsg").textContent="Fichier vide ou illisible.";return;}
+  const header=rows[0].map(h=>h.trim());
+  const idx={}; JOURNAL_COLS.forEach(c=>{ const j=header.indexOf(JOURNAL_HEAD[c]); if(j>=0)idx[c]=j; });
+  if(idx.id==null||idx.raroc==null){document.getElementById("journalMsg").textContent="Format non reconnu (colonnes Reference/RAROC manquantes).";return;}
+  const num=v=>{const n=parseFloat(String(v).replace(",",".")); return isFinite(n)?n:0;};
+  const imported=[];
+  for(let i=1;i<rows.length;i++){
+    const r=rows[i]; if(!r[idx.id])continue;
+    imported.push({
+      id:r[idx.id],date:idx.date!=null?r[idx.date]:"",dossier:idx.dossier!=null?r[idx.dossier]:"",
+      user:idx.user!=null?r[idx.user]:"",bu:idx.bu!=null?r[idx.bu]:"",client:idx.client!=null?r[idx.client]:"",
+      facility:idx.facility!=null?r[idx.facility]:"",nature:idx.nature!=null?r[idx.nature]:"",
+      amount:num(r[idx.amount]),months:idx.months!=null?num(r[idx.months]):0,
+      rating:idx.rating!=null?r[idx.rating]:"",pcd:idx.pcd!=null?num(r[idx.pcd]):0,rate:idx.rate!=null?num(r[idx.rate]):0,
+      raroc:num(r[idx.raroc]),hurdle:idx.hurdle!=null?num(r[idx.hurdle]):0,minRate:idx.minRate!=null?num(r[idx.minRate]):NaN,
+      dec:idx.dec!=null?r[idx.dec]:"",hash:idx.hash!=null?r[idx.hash]:"",pver:idx.pver!=null?num(r[idx.pver]):0
+    });
+  }
+  let log=await getLog();
+  const seen=new Set(log.map(x=>x.id));
+  let added=0;
+  for(const rec of imported){ if(!seen.has(rec.id)){ log.push(rec); seen.add(rec.id); added++; } }
+  log.sort((a,b)=>(b.id>a.id?1:-1));
+  if(log.length>500)log=log.slice(0,500);
+  await store.set("raroc-audit",JSON.stringify(log));
+  loadHistory();
+  document.getElementById("journalMsg").textContent=`Import terminé : ${added} calcul(s) ajouté(s), ${imported.length-added} déjà présent(s).`;
+}
+async function clearJournal(){
+  if(!confirm("Vider le journal local ? Les fiches déjà déposées dans le dossier partagé ne sont pas affectées."))return;
+  await store.set("raroc-audit",JSON.stringify([]));
+  loadHistory();
+  document.getElementById("journalMsg").textContent="Journal local vidé.";
+}
+async function seedExamplesIfEmpty(){
+  const log=await getLog();
+  if(log.length)return;
+  const examples=[
+    {user:"A. Ouédraogo", bu:"Vista Bank Burkina (ex BICIAB)", client:"TM DIFFUSION", ctype:"CORPORATE", sector:"Télécommunication", ftype:11, amount:500000000, months:36, grace:0, repay:"lin", rating:"5", pcd:55, rate:11, commissions:[{label:"Commission de mise en place",rate:1,type:"flat"}]},
+    {user:"K. Barry", bu:"Vista Bank Burkina (ex SGBF)", client:"SAHEL AGRO SA", ctype:"CORPORATE", sector:"Industrie alimentaire", ftype:0, amount:200000000, months:12, grace:0, repay:"infine", util:90, rating:"6", pcd:60, rate:9, commissions:[{label:"Commission de mise en place",rate:0.5,type:"flat"},{label:"Commission de gestion",rate:0.5,type:"annual"}]},
+    {user:"F. Camara", bu:"Vista Bank Guinée", client:"IMPORT NEGOCE GN", ctype:"CORPORATE", sector:"Négoce", ftype:2, amount:150000000, months:6, grace:0, repay:"infine", rating:"4", pcd:45, rate:12, commissions:[{label:"Commission de mise en place",rate:1,type:"flat"}]},
+    {user:"M. Sesay", bu:"Vista Bank Sierra Leone", client:"GARANTIE MARCHÉ BTP", ctype:"CORPORATE", sector:"BTP", ftype:7, amount:400000000, months:24, grace:0, repay:"infine", rating:"6", pcd:50, rate:1.5, commissions:[{label:"Commission de mise en place",rate:0.5,type:"flat"},{label:"Frais de dossier",rate:250000,type:"fixed"}]}
+  ];
+  for(const ex of examples){
+    const inp=buildInputFromExample(ex);
+    const res=computeRAROC(inp);
+    const id="RAROC-EXE-"+Math.random().toString(36).slice(2,6).toUpperCase();
+    await appendLog({id,date:new Date().toLocaleString("fr-FR"),user:ex.user,client:ex.client,amount:ex.amount,raroc:res.raroc,dec:res.dec,hash:fnv(JSON.stringify(inp)),pver:PARAMS.version,example:true});
+  }
+}
+function buildInputFromExample(ex){
+  const bu=PARAMS.bus.find(b=>b.n===ex.bu)||PARAMS.bus[0];
+  const inp=makeInput({
+    user:ex.user,bu:ex.bu,client:ex.client,ctype:ex.ctype,sector:ex.sector,ref:"",
+    ftype:ex.ftype,amount:ex.amount,startDate:null,months:ex.months,grace:ex.grace,repay:ex.repay,
+    util:(ex.util!=null?ex.util:100),rating:ex.rating,pcd:ex.pcd,rate:ex.rate,
+    commissions:ex.commissions||[],fund:bu.fundRate,opc:bu.opc,
+    hurdle:bu.roe,capRatio:bu.capRatio,tax:bu.tax
+  });
+  return inp;
+}
+
+/* ══════════ CONSTRUCTION D'UN INPUT NORMALISÉ PAR NATURE ══════════ */
+function makeInput(raw){
+  const fac=PARAMS.facilities[raw.ftype];
+  const nat=fac.nature, N=NATURES[nat];
+  const inp={
+    user:raw.user,bu:raw.bu,hurdle:raw.hurdle,capRatio:raw.capRatio,tax:raw.tax,
+    client:raw.client,ctype:raw.ctype,sector:raw.sector,ref:raw.ref,dossier:raw.dossier||"",
+    facility:fac.n,rwaW:fac.rwa,ccf:(fac.ccf)/100,
+    amount:raw.amount,startDate:raw.startDate,
+    months:Math.max(1,Math.round(raw.months||1)),
+    grace:Math.max(0,Math.round(raw.grace||0)),
+    repay:raw.repay,util:Math.min(1,Math.max(0,(raw.util||0)/100)),
+    period:Math.max(1,Math.round(raw.period||1)),gracetype:raw.gracetype||"partial",
+    residual:Math.min(100,Math.max(0,raw.residual||0)),
+    rating:raw.rating,pdCum:PARAMS.pd[raw.rating]||DEFAULT_PD[raw.rating],
+    pcd:Math.min(100,Math.max(0,raw.pcd||0)),
+    rate:raw.rate||0,
+    fund:raw.fund||0,opc:raw.opc||0,tolerance:PARAMS.tolerance,
+    nature:nat,natureLabel:N.lab,rateNoun:N.rateLabel,offBal:!N.onBal,imode:N.imode
+  };
+  // Commissions dynamiques -> frais à la mise en place (absolus) + commission récurrente (%/an)
+  const comms=Array.isArray(raw.commissions)?raw.commissions:[];
+  let upfront=0, annual=0;
+  for(const c of comms){
+    const v=+c.rate||0;
+    if(c.type==="flat") upfront += raw.amount*v/100;
+    else if(c.type==="fixed") upfront += v;
+    else if(c.type==="annual") annual += v;
+  }
+  inp.commissions=comms;
+  inp.feeUpfrontAbs=upfront;
+  inp.feerun=annual;
+  // application des verrous de nature
+  if(N.lock.util!=null) inp.util=N.lock.util/100;
+  if(N.lock.repay) inp.repay=N.lock.repay;
+  if(!N.onBal) inp.fund=0;
+  if(!N.show.grace) inp.grace=0;
+  if(!N.show.feerun) inp.feerun=0;
+  return inp;
+}
+
+/* ══════════ FORMULAIRE ══════════ */
+function buildForm(){
+  const bu=document.getElementById("f_bu");bu.innerHTML=PARAMS.bus.map(b=>`<option>${esc(b.n)}</option>`).join("");
+  const ft=document.getElementById("f_ftype");ft.innerHTML=PARAMS.facilities.map((f,i)=>`<option value="${i}"${i===11?" selected":""}>${f.n}</option>`).join("");
+  document.getElementById("f_rating").innerHTML=RATINGS.map(r=>`<option value="${r}"${r==="5"?" selected":""}>${r} — ${APPRE[r][0]} (${APPRE[r][1]})</option>`).join("");
+  if(!document.getElementById("f_start").value)document.getElementById("f_start").value=new Date().toISOString().slice(0,10);
+  seedCommissionsIfEmpty();
+  onBU(); renderNatureUI(); onRating();
+}
+function onBU(){
+  const b=PARAMS.bus.find(x=>x.n===document.getElementById("f_bu").value)||PARAMS.bus[0];
+  document.getElementById("f_fund").value=b.fundRate;
+  document.getElementById("f_opc").value=b.opc;
+  document.getElementById("f_capr_show").value=b.capRatio;
+  document.getElementById("f_tax_show").value=b.tax;
+  document.getElementById("f_roe_show").value=b.roe;
+}
+function showW(id,on){document.getElementById(id).style.display=on?"":"none";}
+function renderNatureUI(){
+  const fac=PARAMS.facilities[+document.getElementById("f_ftype").value];
+  const nat=fac.nature, N=NATURES[nat];
+  const banner=document.getElementById("natureBanner");
+  banner.className="natbanner "+N.cls;
+  banner.innerHTML=`<span class="b">${N.badge}</span><span><b>${N.lab}.</b> ${N.desc}${nat==="signature"?` <b>CCF ${fac.ccf}%</b> → équivalent-crédit.`:""}</span>`;
+  showW("wrap_grace",N.show.grace); showW("wrap_repay",N.show.repay); showW("wrap_util",N.show.util);
+  showW("wrap_period",!!N.show.period); showW("wrap_gracetype",!!N.show.gracetype); showW("wrap_residual",!!N.show.residual);
+  showW("wrap_ccf",N.show.ccf); showW("wrap_fund",N.show.fund);
+  document.getElementById("lbl_rate").textContent=N.rateLabel;
+  document.getElementById("rateHint").textContent=N.rateHint;
+  document.getElementById("commHint").textContent=(nat==="signature")?"Astuce : pour une caution, la rémunération principale est le taux de commission ci-dessus. Ajoutez ici les frais complémentaires (mise en place, avenant…).":"";
+  document.getElementById("lbl_amount").textContent=(nat==="signature")?"Montant garanti":"Montant";
+  document.getElementById("lbl_mat").textContent=(nat==="signature")?"Durée de l'engagement (mois)":"Maturité (mois)";
+  document.getElementById("lbl_ccf").textContent=(nat==="signature")?"Facteur de conversion CCF (%)":"FCEC sur non tiré (%)";
+  document.getElementById("ccfHint").textContent=(nat==="signature")?"Convertit le montant garanti en équivalent-crédit pour le capital et la perte":"Sur la part non tirée de l'autorisation";
+  if(N.lock.util!=null){document.getElementById("f_util").value=N.lock.util;}
+  if(N.lock.repay){document.getElementById("f_repay").value=N.lock.repay;}
+  if(!N.onBal){document.getElementById("f_fund").value=0;}
+  document.getElementById("f_ccf").value=fac.ccf;
+  document.getElementById("ftypeHint").textContent=`Pondération RWA ${Math.round(fac.rwa*100)} %${N.show.ccf?` · CCF ${fac.ccf} %`:""}`;
+}
+function onRating(){
+  const r=document.getElementById("f_rating").value;
+  const c=PARAMS.pd[r]||DEFAULT_PD[r];
+  document.getElementById("pdHint").textContent=`${APPRE[r][0]} · PD cumulée : 1 an ${c[0]} % · 3 ans ${c[2]} % · 5 ans ${c[4]} % · 10 ans ${c[9]} %`;
+}
+document.getElementById("f_bu").addEventListener("change",onBU);
+document.getElementById("f_ftype").addEventListener("change",renderNatureUI);
+document.getElementById("f_rating").addEventListener("change",onRating);
+/* ══════════ COMMISSIONS DYNAMIQUES ══════════ */
+const COMM_TYPES=[["flat","% du montant (à la mise en place)"],["fixed","Montant fixe (à la mise en place)"],["annual","% par an (récurrent)"]];
+function addCommission(label,rate,type){
+  label=label!=null?label:""; rate=rate!=null?rate:0; type=type||"flat";
+  const row=document.createElement("div");
+  row.className="commrow"; row.setAttribute("data-crow","");
+  row.innerHTML=`
+    <input data-c="label" placeholder="Ex : Commission de mise en place" value="${esc(label)}">
+    <input data-c="rate" type="number" step="0.01" value="${rate}">
+    <select data-c="type">${COMM_TYPES.map(o=>`<option value="${o[0]}"${type===o[0]?" selected":""}>${o[1]}</option>`).join("")}</select>
+    <button class="del" title="Supprimer" onclick="this.closest('[data-crow]').remove()">×</button>`;
+  document.getElementById("commList").appendChild(row);
+}
+function readCommissions(){
+  return [...document.querySelectorAll('#commList [data-crow]')].map(r=>({
+    label:r.querySelector('[data-c="label"]').value.trim()||"Commission",
+    rate:+r.querySelector('[data-c="rate"]').value||0,
+    type:r.querySelector('[data-c="type"]').value
+  })).filter(c=>c.rate!==0);
+}
+function setCommissions(list){
+  document.getElementById("commList").innerHTML="";
+  (list&&list.length?list:[{label:"Commission de mise en place",rate:1,type:"flat"}]).forEach(c=>addCommission(c.label,c.rate,c.type));
+}
+function seedCommissionsIfEmpty(){
+  if(!document.querySelector('#commList [data-crow]')) setCommissions();
+}
+function resetForm(){buildForm();setCommissions();["f_client","f_sector","f_ref","f_dossier"].forEach(i=>document.getElementById(i).value="");}
+
+/* ══════════ MOTEUR ══════════ */
+function survivalCurve(pdCumPct, months){
+  const H=[0]; for(let k=0;k<10;k++)H.push(-Math.log(1-Math.min(pdCumPct[k]/100,0.999999)));
+  const S=[1];
+  for(let m=1;m<=months;m++){
+    const y=m/12; let h;
+    if(y>=10){ const slope=H[10]-H[9]; h=H[10]+slope*(y-10); }
+    else{ const k=Math.floor(y), fr=y-k; h=H[k]+(H[Math.min(k+1,10)]-H[k])*fr; }
+    S.push(Math.exp(-h));
+  }
+  return S;
+}
+function schedule(amount, months, grace, mode, period, annualRatePct, gracetype, residualPct){
+  period=Math.max(1,Math.round(period||1));
+  const im=(annualRatePct||0)/100/12;                 // taux mensuel
+  const residual=amount*((residualPct||0)/100);       // valeur résiduelle / balloon
+  const out=new Array(months);
+  let bal=amount;
+  // Phase de différé
+  for(let t=1;t<=grace && t<=months;t++){
+    out[t-1]=bal;
+    if(gracetype==="total") bal=bal*(1+im);            // différé total : intérêts capitalisés
+  }
+  if(grace>=months){ for(let t=1;t<=months;t++) if(out[t-1]==null)out[t-1]=bal; return out; }
+  // Échéances après le différé, à la périodicité choisie
+  const remMonths=months-grace;
+  const inst=[];
+  for(let k=period;k<=remMonths;k+=period) inst.push(grace+k);
+  if(inst.length===0 || inst[inst.length-1]!==months) inst.push(months);
+  const instSet=new Set(inst); const N=inst.length;
+  const principalToAmort=Math.max(0,bal-residual);
+  if(mode==="infine"){
+    for(let t=grace+1;t<=months;t++) out[t-1]=bal;
+  } else if(mode==="ann"){
+    const ip=Math.pow(1+im,period)-1;                  // taux périodique équivalent
+    const A= ip>0 ? principalToAmort*ip/(1-Math.pow(1+ip,-N)) : principalToAmort/N;  // annuité constante
+    let ab=principalToAmort;
+    for(let t=grace+1;t<=months;t++){
+      out[t-1]=residual+ab;
+      if(instSet.has(t)){ const principalPortion= ip>0 ? (A-ab*ip) : A; ab=Math.max(0,ab-principalPortion); }
+    }
+  } else { // amortissement constant du capital
+    const perInst=principalToAmort/N;
+    let ab=principalToAmort;
+    for(let t=grace+1;t<=months;t++){
+      out[t-1]=residual+ab;
+      if(instSet.has(t)) ab=Math.max(0,ab-perInst);
+    }
+  }
+  return out;
+}
+function preciseMinRate(inp){
+  // Taux (ou commission) plancher : RAROC = ROE cible. Bisection robuste,
+  // valable même quand l'échéancier dépend du taux (annuités, différé total).
+  const target=inp.hurdle;
+  const raAt=r=>computeRAROC(Object.assign({},inp,{rate:r})).raroc-target;
+  let lo=0, hi=100;
+  if(raAt(lo)>=0) return 0;          // rentable même à taux nul
+  if(raAt(hi)<0) return NaN;         // inatteignable même à 100 %
+  for(let k=0;k<60;k++){ const mid=(lo+hi)/2; if(raAt(mid)<0)lo=mid; else hi=mid; }
+  return (lo+hi)/2;
+}
+function computeRAROC(inp){
+  const M=inp.months;
+  const S=survivalCurve(inp.pdCum,M);
+  const off=inp.offBal;
+  const out=schedule(inp.amount, M, off?0:inp.grace, off?"infine":inp.repay, off?1:(inp.period||1), inp.rate, inp.gracetype, off?0:(inp.residual||0));
+  const capR=inp.capRatio/100, lgd=inp.pcd/100, tax=inp.tax/100;
+  const rC=inp.rate/100, rF=off?0:inp.fund/100, rOp=inp.opc/100, rFee=inp.feerun/100;
+  const util=inp.util, ccf=inp.ccf, rwaW=inp.rwaW, imode=inp.imode;
+  let elLife=0,sumEC=0,sumEAD=0,sumRevAcc=0,preRevBase=0,sumFund=0,sumOp=0,sumFeeRun=0,elCum=0,sumOutSurv=0;
+  const periods=[];
+  const start=inp.startDate?new Date(inp.startDate):null;
+  for(let t=1;t<=M;t++){
+    const O=out[t-1];
+    let ead,revBase,drawn;
+    if(off){ ead=O*ccf; revBase=O; drawn=0; }
+    else { drawn=O*util; const undrawn=O*(1-util)*ccf; ead=drawn+undrawn; revBase=drawn; }
+    const survStart=S[t-1], mpd=S[t-1]-S[t];
+    const elInc=ead*mpd*lgd; elCum+=elInc;
+    const ec=ead*rwaW*capR;
+    const revExp=(imode==="pre")?0:revBase*rC/12*survStart;
+    const fundP= off?0 : drawn*rF/12*survStart;
+    const opP=O*rOp/12*survStart;
+    const feeRunP=O*rFee/12*survStart;
+    elLife+=elInc; sumEC+=ec*survStart/12; sumEAD+=ead*survStart/12;
+    sumRevAcc+=revBase*survStart/12; preRevBase+=revBase/12; sumFund+=fundP; sumOp+=opP; sumFeeRun+=feeRunP; sumOutSurv+=O*survStart/12;
+    let label="P"+t;
+    if(start){const d=new Date(start);d.setMonth(d.getMonth()+t);label=d.toLocaleDateString("fr-FR");}
+    periods.push({t,label,out:O,ead,survStart,mpd,elInc,elCum,ec,intExp:revExp,fund:fundP,op:opP,feeRun:feeRunP});
+  }
+  const sumInt=(imode==="pre")?preRevBase*rC:sumRevAcc*rC;
+  const feeUpfront=inp.feeUpfrontAbs||0;
+  const years=M/12;
+  const revenues=sumInt+feeUpfront+sumFeeRun;
+  const pnlBeforeTax=revenues-sumFund-sumOp-elLife;
+  const capBenefit=sumEC*(inp.fund/100);
+  const netIncome=pnlBeforeTax*(1-tax)+capBenefit;
+  const raroc=sumEC>0?netIncome/sumEC*100:0;
+  const margin=raroc-inp.hurdle;
+  const dBase=((imode==="pre")?preRevBase:sumRevAcc)*(1-tax);
+  const targetIncome=inp.hurdle/100*sumEC;
+  const minRate=dBase>0?(rC+(targetIncome-netIncome)/dBase)*100:NaN;
+  let dec="GO"; if(margin<0)dec=(margin>=-inp.tolerance)?"COND":"NOGO";
+  const taxAmt=pnlBeforeTax*tax;
+  return {raroc,hurdle:inp.hurdle,margin,minRate,elLife,avgEC:sumEC/years,capYears:sumEC,avgEAD:sumEAD/years,
+    revenues,sumInt,feeUpfront,sumFeeRun,sumFund,sumOp,capBenefit,tax:taxAmt,netIncome,years,dec,periods,
+    preInterest:(imode==="pre"?sumInt:0), off, sumOutSurv};
+}
+
+/* ══════════ EXÉCUTION ══════════ */
+function readInputs(){
+  const buName=document.getElementById("f_bu").value;
+  const bu=PARAMS.bus.find(b=>b.n===buName)||PARAMS.bus[0];
+  return makeInput({
+    user:document.getElementById("f_user").value.trim()||"Non renseigné",
+    bu:buName, hurdle:bu.roe, capRatio:bu.capRatio, tax:bu.tax,
+    client:document.getElementById("f_client").value.trim()||"Non renseigné",
+    ctype:document.getElementById("f_ctype").value,
+    sector:document.getElementById("f_sector").value.trim(),
+    ref:document.getElementById("f_ref").value.trim(),
+    dossier:document.getElementById("f_dossier").value.trim(),
+    ftype:+document.getElementById("f_ftype").value,
+    amount:+document.getElementById("f_amount").value||0,
+    startDate:document.getElementById("f_start").value||null,
+    months:+document.getElementById("f_mat").value||1,
+    grace:+document.getElementById("f_grace").value||0,
+    repay:document.getElementById("f_repay").value,
+    period:+document.getElementById("f_period").value||1,
+    gracetype:document.getElementById("f_gracetype").value,
+    residual:+document.getElementById("f_residual").value||0,
+    util:+document.getElementById("f_util").value||0,
+    rating:document.getElementById("f_rating").value,
+    pcd:+document.getElementById("f_pcd").value||0,
+    rate:+document.getElementById("f_rate").value||0,
+    commissions:readCommissions(),
+    fund:+document.getElementById("f_fund").value||0,
+    opc:+document.getElementById("f_opc").value||0
+  });
+}
+async function runCalc(){
+  const inp=readInputs();
+  if(inp.amount<=0){alert("Le montant doit être positif.");return;}
+  if(inp.grace>=inp.months){alert("Le différé doit être inférieur à la maturité.");return;}
+  if(inp.rate<=0 && !confirm("Le taux ("+inp.rateNoun.toLowerCase()+") est à 0. Continuer ?"))return;
+  const res=computeRAROC(inp);
+  res.minRate=preciseMinRate(inp);   // plancher exact (bisection) — robuste aux annuités / différé total
+  const now=new Date();
+  const id=inp.ref||("RAROC-"+now.toISOString().slice(0,10).replace(/-/g,"")+"-"+Math.random().toString(36).slice(2,6).toUpperCase());
+  const hash=fnv(JSON.stringify(inp));
+  lastResult={inp,res,id,hash,date:now.toLocaleString("fr-FR"),dateISO:now.toISOString().slice(0,10),pver:PARAMS.version};
+  renderResult(); renderAudit();
+  await appendLog({id,date:lastResult.date,dossier:inp.dossier||"",user:inp.user,bu:inp.bu,client:inp.client,facility:inp.facility,nature:NATURES[inp.nature].lab,amount:inp.amount,months:inp.months,rating:inp.rating,pcd:inp.pcd,rate:inp.rate,raroc:res.raroc,hurdle:res.hurdle,minRate:res.minRate,dec:res.dec,hash,pver:PARAMS.version});
+  loadHistory();
+  showTab("result");
+}
+
+function renderResult(){
+  const {inp,res,id}=lastResult;
+  document.getElementById("noRes").style.display="none";
+  document.getElementById("resZone").style.display="block";
+  const vb=document.getElementById("verdictBox"); vb.className="verdict "+res.dec;
+  document.getElementById("verdictTxt").textContent=decLabel(res.dec);
+  document.getElementById("verdictSub").textContent=
+    res.dec==="GO"?"Le RAROC couvre le ROE cible : l'opération crée de la valeur au prix proposé."
+    :res.dec==="COND"?"RAROC légèrement sous le butoir : acceptable sous conditions (prix, garanties ou maturité à renforcer)."
+    :"Le RAROC est insuffisant au prix proposé. Voir le taux plancher ci-dessous.";
+  document.getElementById("verdictRef").textContent=id+" · "+lastResult.date;
+  document.getElementById("k_raroc").textContent=fmtP(res.raroc);
+  document.getElementById("k_hurdle").textContent=fmtP(res.hurdle,1);
+  document.getElementById("k_margin").textContent=(res.margin>=0?"+":"")+fmtP(res.margin);
+  document.getElementById("k_minrate").textContent=fmtP(res.minRate);
+  document.getElementById("k_minrate_lbl").textContent=(inp.nature==="signature")?"Commission plancher":"Taux client plancher";
+  document.getElementById("k_el").textContent=fmtN(Math.round(res.elLife));
+  document.getElementById("k_ec").textContent=fmtN(Math.round(res.avgEC));
+  const b=res.avgEAD||1, Y=res.years;
+  const prodLabel=(inp.nature==="signature")?"Commissions":"Intérêts";
+  const items=[
+    [prodLabel,res.sumInt/Y/b*100],
+    ["Commissions à la mise en place",res.feeUpfront/Y/b*100],
+    ["Commissions récurrentes",res.sumFeeRun/Y/b*100],
+    ["Coût de la ressource",-res.sumFund/Y/b*100],
+    ["Coûts opérationnels",-res.sumOp/Y/b*100],
+    ["Perte attendue (EL)",-res.elLife/Y/b*100],
+    ["Impôt sur les sociétés",-res.tax/Y/b*100],
+    ["Rendement du capital",res.capBenefit/Y/b*100]
+  ];
+  const mx=Math.max(...items.map(i=>Math.abs(i[1])),0.001);
+  document.getElementById("waterfall").innerHTML=items.map(([l,v])=>`
+    <div class="wfrow"><div class="lab">${l}</div>
+    <div class="bar"><i style="width:${Math.min(Math.abs(v)/mx*100,100)}%;background:${v>=0?"var(--go)":"var(--nogo)"}"></i></div>
+    <div class="val">${(v>=0?"+":"")+v.toFixed(2)} %</div></div>`).join("")+
+    `<div class="wfrow" style="border-top:2px solid var(--brand);padding-top:6px;margin-top:6px"><div class="lab"><b>Résultat net annualisé</b></div><div></div><div class="val"><b>${(res.netIncome/Y/b*100).toFixed(2)} %</b></div></div>`;
+  document.getElementById("factTable").innerHTML=factorRows(inp,res).map(r=>
+    r.h?`<tr><th colspan="2">${r.h}</th></tr>`:`<tr><td>${r[0]}</td><td class="num">${r[1]}</td></tr>`).join("");
+}
+function factorRows(inp,res){
+  const hz=Math.min(Math.ceil(inp.months/12),10)-1;
+  const prod=(inp.nature==="signature")?"Commissions espérées":"Intérêts espérés";
+  const rows=[
+    {h:"Facilité — "+NATURES[inp.nature].lab},
+    ["Type · pondération RWA",`${inp.facility} · ${Math.round(inp.rwaW*100)} %`],
+    [(inp.nature==="signature")?"Montant garanti":"Montant",fmtN(inp.amount)],
+  ];
+  if(inp.nature==="signature") rows.push(["Équivalent-crédit (montant × CCF)",fmtN(Math.round(inp.amount*inp.ccf))+`  (CCF ${Math.round(inp.ccf*100)} %)`]);
+  rows.push(["Mise en place / maturité"+(NATURES[inp.nature].show.grace?" / différé":""),`${inp.startDate||"—"} · ${inp.months} mois${NATURES[inp.nature].show.grace?" · "+inp.grace+" mois":""}`]);
+  if(inp.nature==="terme"){
+    const perLbl={1:"mensuelle",3:"trimestrielle",6:"semestrielle",12:"annuelle"}[inp.period]||(inp.period+" mois");
+    rows.push(["Remboursement",`${({infine:"In fine",lin:"Amortissement constant",ann:"Annuités constantes"})[inp.repay]}${inp.repay!=="infine"?" · échéance "+perLbl:""}`]);
+    if(inp.grace>0) rows.push(["Différé",`${inp.grace} mois · ${inp.gracetype==="total"?"total (intérêts capitalisés)":"partiel (intérêts payés)"}`]);
+    if(inp.residual>0) rows.push(["Valeur résiduelle / balloon",`${inp.residual} % · ${fmtN(Math.round(inp.amount*inp.residual/100))} à l'échéance`]);
+  }
+  if(inp.nature==="revolving") rows.push(["Utilisation / FCEC",`${(inp.util*100).toFixed(0)} % / ${(inp.ccf*100).toFixed(0)} %`]);
+  rows.push({h:"Risque"},
+    ["Notation Vista",`${inp.rating} — ${APPRE[inp.rating][0]} (${APPRE[inp.rating][1]})`],
+    ["PD cumulée (1 an / horizon)",`${inp.pdCum[0]} % / ${inp.pdCum[hz]} %`],
+    ["PCD (LGD) — saisie manuelle",fmtP(inp.pcd,1)],
+    ["Perte attendue sur la vie",fmtN(Math.round(res.elLife))],
+    ["Capital économique moyen",fmtN(Math.round(res.avgEC))],
+    {h:"Filiale appliquée"},
+    ["Ratio de capital / IS",`${inp.capRatio} % / ${inp.tax} %`]);
+  rows.push(["Coût ressource / coûts opé.",inp.offBal?`hors-bilan (0) / ${inp.opc} %`:`${inp.fund} % / ${inp.opc} %`]);
+  rows.push({h:"Rentabilité (sur la durée de vie)"},
+    [prod,fmtN(Math.round(res.sumInt))]);
+  // ventilation détaillée de chaque commission
+  (inp.commissions||[]).forEach(c=>{
+    let val=0, suff="";
+    if(c.type==="flat"){val=inp.amount*c.rate/100; suff=` (${c.rate} % flat)`;}
+    else if(c.type==="fixed"){val=c.rate; suff=" (montant fixe)";}
+    else {val=res.sumOutSurv*c.rate/100; suff=` (${c.rate} %/an)`;}
+    rows.push([esc(c.label)+suff, fmtN(Math.round(val))]);
+  });
+  rows.push(
+    ["Total commissions et frais",fmtN(Math.round(res.feeUpfront+res.sumFeeRun))],
+    ["Coût de la ressource",inp.offBal?"—":fmtN(Math.round(res.sumFund))],
+    ["Coûts opérationnels",fmtN(Math.round(res.sumOp))],
+    ["Impôt",fmtN(Math.round(res.tax))],
+    ["Rendement du capital",fmtN(Math.round(res.capBenefit))],
+    ["Résultat net après impôt",fmtN(Math.round(res.netIncome))],
+    {h:"Décision"},
+    ["RAROC annualisé",fmtP(res.raroc)],
+    ["Taux butoir (ROE "+inp.bu+")",fmtP(res.hurdle,1)],
+    ["Marge RAROC",(res.margin>=0?"+":"")+fmtP(res.margin)],
+    [(inp.nature==="signature")?"Commission plancher":"Taux client plancher",fmtP(res.minRate)],
+    ["Recommandation",decLabel(res.dec)]);
+  return rows;
+}
+
+/* ══════════ TABLEAU D'AUDIT ══════════ */
+function auditRowsHTML(){
+  const {inp,res}=lastResult;
+  let rows="";
+  const originFlows=res.feeUpfront+res.preInterest;
+  rows+=`<tr><td class="num">P0</td><td>${inp.startDate||"—"}</td><td class="num">${fmtN(Math.round(inp.amount))}</td><td class="num">—</td><td class="num">1,0000</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">${fmtN(Math.round(originFlows))}</td><td class="num">${inp.offBal?"0":"—"}</td><td class="num">—</td></tr>`;
+  for(const p of res.periods){
+    rows+=`<tr>
+      <td class="num">${p.t}</td><td>${p.label}</td>
+      <td class="num">${fmtN(Math.round(p.out))}</td>
+      <td class="num">${fmtN(Math.round(p.ead))}</td>
+      <td class="num">${p.survStart.toFixed(4)}</td>
+      <td class="num">${(p.mpd*100).toFixed(4)} %</td>
+      <td class="num">${fmtN(Math.round(p.elInc))}</td>
+      <td class="num">${fmtN(Math.round(p.elCum))}</td>
+      <td class="num">${fmtN(Math.round(p.ec))}</td>
+      <td class="num">${fmtN(Math.round(p.intExp))}</td>
+      <td class="num">${fmtN(Math.round(p.fund))}</td>
+      <td class="num">${fmtN(Math.round(p.op))}</td></tr>`;
+  }
+  return rows;
+}
+function auditHeader(){
+  const prod=(lastResult&&lastResult.inp.nature==="signature")?"Comm. esp.":"Intérêts esp.";
+  return `<thead><tr><th class="num">P</th><th>Date</th><th class="num">Encours</th><th class="num">EAD</th><th class="num">Survie</th><th class="num">PD marg.</th><th class="num">EL incr.</th><th class="num">EL cumul.</th><th class="num">Capital éco.</th><th class="num">${prod}</th><th class="num">Coût ress.</th><th class="num">Coûts opé.</th></tr></thead>`;
+}
+function renderAudit(){
+  if(!lastResult)return;
+  document.getElementById("noAudit").style.display="none";
+  document.getElementById("auditZone").style.display="block";
+  document.getElementById("auditTable").innerHTML=auditHeader()+"<tbody>"+auditRowsHTML()+
+    `<tr class="tot"><td colspan="6">TOTAL (sur la vie)</td><td class="num">${fmtN(Math.round(lastResult.res.elLife))}</td><td></td><td></td><td class="num">${fmtN(Math.round(lastResult.res.sumInt-lastResult.res.preInterest))}</td><td class="num">${fmtN(Math.round(lastResult.res.sumFund))}</td><td class="num">${fmtN(Math.round(lastResult.res.sumOp))}</td></tr></tbody>`;
+}
+function exportPeriodsCSV(){
+  if(!lastResult)return;
+  const {inp,res}=lastResult;
+  const head=["Periode","Date","Encours","EAD","Survie debut","PD marginale %","EL incremental","EL cumule","Capital economique","Produit espere","Cout ressource","Couts operationnels"];
+  const lines=[head.join(";")];
+  lines.push(["P0",inp.startDate||"",Math.round(inp.amount),"","1","","","","",Math.round(res.feeUpfront+res.preInterest),inp.offBal?0:"",""].join(";"));
+  for(const p of res.periods){
+    lines.push([p.t,p.label,Math.round(p.out),Math.round(p.ead),p.survStart.toFixed(6),(p.mpd*100).toFixed(6),Math.round(p.elInc),Math.round(p.elCum),Math.round(p.ec),Math.round(p.intExp),Math.round(p.fund),Math.round(p.op)].join(";"));
+  }
+  const csv="\uFEFF"+lines.join("\r\n");
+  try{
+    const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fileBase()+"_audit.csv";
+    document.body.appendChild(a);a.click();a.remove();
+  }catch(e){alert("Export CSV bloqué par l'environnement. Le tableau reste disponible dans la fiche PDF.");}
+}
+
+/* ══════════ EXPORT PDF ══════════ */
+/* ══════════ NOMMAGE NORMALISÉ DES EXPORTS ══════════ */
+function sanitizeName(s){
+  return String(s==null?"":s).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-+|-+$/g,"").toUpperCase().slice(0,40)||"NA";
+}
+function fileBase(){
+  if(!lastResult) return "RAROC";
+  const dateISO=lastResult.dateISO||new Date().toISOString().slice(0,10);
+  const ref=String(lastResult.id).replace(/^RAROC-/i,"");
+  return `RAROC_${dateISO}_${sanitizeName(lastResult.inp.client)}_${lastResult.res.dec}_${sanitizeName(ref)}`;
+}
+function onePageFicheHTML(lr){
+  const {inp,res,id,hash,date,pver}=lr;
+  const rows=factorRows(inp,res).map(r=>r.h?`<tr><th colspan="2" style="background:#eef1ee">${r.h}</th></tr>`:`<tr><td>${r[0]}</td><td style="text-align:right;font-family:monospace">${r[1]}</td></tr>`).join("");
+  const savedLR=lastResult; lastResult=lr;
+  const audit=`${auditHeader()}<tbody>${auditRowsHTML()}</tbody>`;
+  lastResult=savedLR;
+  return `
+    <h1>Fiche RAROC — ${esc(inp.client)}</h1>
+    <table><tr><td><b>Référence</b> ${id}</td><td><b>Date</b> ${date}</td><td><b>Analyste</b> ${esc(inp.user)}</td></tr>
+    <tr><td><b>Dossier</b> ${esc(inp.dossier||"—")}</td><td><b>Client</b> ${esc(inp.client)} (${esc(inp.ctype)})</td><td><b>Filiale</b> ${esc(inp.bu)}</td></tr>
+    <tr><td colspan="3"><b>Facilité</b> ${esc(inp.facility)} — ${NATURES[inp.nature].lab}</td></tr></table>
+    <div class="pverdict pv-${res.dec}">RECOMMANDATION : ${decLabel(res.dec)} — RAROC ${res.raroc.toFixed(2)} % vs butoir ${res.hurdle.toFixed(1)} % (marge ${(res.margin>=0?"+":"")}${res.margin.toFixed(2)} pt) · ${(inp.nature==="signature")?"Commission":"Taux"} plancher ${isFinite(res.minRate)?res.minRate.toFixed(2):"—"} %</div>
+    <h2>Principaux facteurs</h2>
+    <table>${rows}</table>
+    <h2>Traçabilité</h2>
+    <table><tr><td><b>Empreinte des saisies (FNV-1a)</b></td><td style="font-family:monospace">${hash}</td></tr>
+    <tr><td><b>Version des paramètres</b></td><td style="font-family:monospace">v${pver}</td></tr>
+    <tr><td><b>Traitement</b></td><td>${inp.offBal?"Hors-bilan : équivalent-crédit = montant × CCF "+Math.round(inp.ccf*100)+" %, sans coût de ressource, rémunération par commission":"Bilan : intérêts sur encours, coût de ressource applicable"}. Notation Vista ${inp.rating}, PCD ${inp.pcd} % (manuelle).</td></tr></table>
+    <div class="psig"><div>L'analyste</div><div>Le responsable des risques</div><div>Le comité</div></div>
+    <div class="pbreak"></div>
+    <h2>Tableau de calcul par période (audit)</h2>
+    <table>${audit}</table>
+    <p style="margin-top:10px;font-size:8.5px;color:#555">Document généré par l'outil RAROC web v3.5 — instrument d'aide à la décision. Reproduire ce calcul : ressaisir les hypothèses avec les paramètres v${pver}.</p>`;
+}
+function exportPDF(){
+  if(!lastResult)return;
+  document.getElementById("printReport").innerHTML=onePageFicheHTML(lastResult);
+  const prevTitle=document.title;
+  document.title=fileBase();
+  const restore=()=>{document.title=prevTitle;window.removeEventListener("afterprint",restore);};
+  window.addEventListener("afterprint",restore);
+  window.print();
+  setTimeout(restore,2000);
+}
+
+/* ══════════ ADMIN ══════════ */
+function adminLogin(){
+  const pin=document.getElementById("adminPin").value;
+  if(fnv(pin)===PARAMS.pinHash){adminOK=true;document.getElementById("adminGate").style.display="none";document.getElementById("adminZone").style.display="block";fillAdmin();}
+  else document.getElementById("adminErr").style.display="block";
+}
+function adminLogout(){adminOK=false;document.getElementById("adminZone").style.display="none";document.getElementById("adminGate").style.display="block";document.getElementById("adminPin").value="";document.getElementById("adminErr").style.display="none";}
+const NATURE_OPTS=[["terme","Crédit à terme"],["revolving","Revolving"],["escompte","Pré-compté"],["signature","Signature (hors-bilan)"]];
+function fillAdmin(){
+  document.getElementById("a_tol").value=PARAMS.tolerance;
+  let bh="<tr><th>Filiale</th><th class='num'>ROE cible %</th><th class='num'>Ratio capital %</th><th class='num'>Coût ressource %</th><th class='num'>IS %</th><th class='num'>Coûts opé. %</th><th></th></tr>";
+  bh+=PARAMS.bus.map((b,i)=>`<tr>
+    <td><input data-bu="${i}" data-k="n" value="${esc(b.n)}" style="min-width:220px"></td>
+    <td class="num"><input data-bu="${i}" data-k="roe" type="number" step="0.5" value="${b.roe}"></td>
+    <td class="num"><input data-bu="${i}" data-k="capRatio" type="number" step="0.1" value="${b.capRatio}"></td>
+    <td class="num"><input data-bu="${i}" data-k="fundRate" type="number" step="0.01" value="${b.fundRate}"></td>
+    <td class="num"><input data-bu="${i}" data-k="tax" type="number" step="0.1" value="${b.tax}"></td>
+    <td class="num"><input data-bu="${i}" data-k="opc" type="number" step="0.1" value="${b.opc}"></td>
+    <td><button class="btn danger" style="padding:4px 10px" onclick="delBU(${i})">×</button></td></tr>`).join("");
+  document.getElementById("buTable").innerHTML=bh;
+  let fh="<tr><th>Type de facilité</th><th>Nature</th><th class='num'>Pondération RWA %</th><th class='num'>CCF %</th></tr>";
+  fh+=PARAMS.facilities.map((f,i)=>`<tr>
+    <td>${esc(f.n)}</td>
+    <td><select data-fac="${i}" data-k="nature">${NATURE_OPTS.map(o=>`<option value="${o[0]}"${f.nature===o[0]?" selected":""}>${o[1]}</option>`).join("")}</select></td>
+    <td class="num"><input data-fac="${i}" data-k="rwa" type="number" step="1" value="${Math.round(f.rwa*100)}"></td>
+    <td class="num"><input data-fac="${i}" data-k="ccf" type="number" step="1" value="${f.ccf}"></td></tr>`).join("");
+  document.getElementById("facTable").innerHTML=fh;
+  let ph="<tr><th>Note</th>"+[1,2,3,4,5,6,7,8,9,10].map(y=>`<th class='num'>${y} an${y>1?"s":""}</th>`).join("")+"</tr>";
+  ph+=RATINGS.map(r=>`<tr><td><b>${r}</b></td>`+PARAMS.pd[r].map((v,j)=>`<td><input data-pd="${r}:${j}" type="number" step="0.01" value="${v}"></td>`).join("")+"</tr>").join("");
+  document.getElementById("pdTable").innerHTML=ph;
+}
+function addBU(){PARAMS.bus.push({n:"Nouvelle filiale",roe:20,capRatio:11.5,fundRate:5,tax:27.5,opc:1.0});fillAdmin();}
+function delBU(i){if(PARAMS.bus.length<=1){alert("Au moins une filiale est requise.");return;}if(confirm("Supprimer cette filiale ?")){PARAMS.bus.splice(i,1);fillAdmin();}}
+async function adminSave(){
+  if(!adminOK)return;
+  PARAMS.tolerance=+document.getElementById("a_tol").value||PARAMS.tolerance;
+  document.querySelectorAll("[data-bu]").forEach(el=>{const b=PARAMS.bus[+el.dataset.bu],k=el.dataset.k;b[k]=(k==="n")?el.value.trim():(+el.value||0);});
+  document.querySelectorAll("[data-fac]").forEach(el=>{const f=PARAMS.facilities[+el.dataset.fac],k=el.dataset.k;if(k==="rwa")f.rwa=(+el.value||0)/100;else if(k==="ccf")f.ccf=+el.value||0;else if(k==="nature")f.nature=el.value;});
+  document.querySelectorAll("[data-pd]").forEach(el=>{const[r,j]=el.dataset.pd.split(":");PARAMS.pd[r][+j]=+el.value||0;});
+  for(const r of RATINGS){for(let j=1;j<10;j++){if(PARAMS.pd[r][j]<PARAMS.pd[r][j-1]){alert(`PD non croissante pour la note ${r} (horizon ${j+1} ans). Corrigez avant d'enregistrer.`);return;}}}
+  const np=document.getElementById("a_newpin").value;
+  if(np){if(np.length<6){alert("Le code doit compter au moins 6 caractères.");return;}PARAMS.pinHash=fnv(np);document.getElementById("a_newpin").value="";}
+  PARAMS.version++; PARAMS.updatedAt=new Date().toLocaleString("fr-FR"); PARAMS.updatedBy="admin";
+  await saveParams(); buildForm();
+  document.getElementById("adminMsg").textContent=`Paramètres enregistrés — version v${PARAMS.version} (${PARAMS.updatedAt}).`;
+}
+async function adminReset(){
+  if(!adminOK)return;
+  if(!confirm("Restaurer les valeurs d'usine ? La version sera incrémentée."))return;
+  const v=PARAMS.version+1, pin=PARAMS.pinHash;
+  PARAMS=JSON.parse(JSON.stringify(DEFAULT_PARAMS));
+  PARAMS.version=v; PARAMS.pinHash=pin; PARAMS.updatedAt=new Date().toLocaleString("fr-FR");
+  await saveParams(); fillAdmin(); buildForm();
+  document.getElementById("adminMsg").textContent=`Valeurs d'usine restaurées — version v${PARAMS.version}.`;
+}
+
+/* ══════════ DOSSIER MULTI-FACILITÉS ══════════ */
+let DOSSIER=[];
+async function loadDossier(){
+  const r=await store.get("raroc-dossier");
+  if(r&&r.value){try{DOSSIER=JSON.parse(r.value);}catch(e){DOSSIER=[];}}
+  updateDossierCount();
+}
+async function saveDossier(){ await store.set("raroc-dossier",JSON.stringify(DOSSIER)); updateDossierCount(); }
+function updateDossierCount(){
+  const b=document.getElementById("dossierCount");
+  if(DOSSIER.length){b.style.display="";b.textContent=DOSSIER.length;} else b.style.display="none";
+}
+async function addToDossier(){
+  if(!lastResult){alert("Calculez d'abord une facilité.");return;}
+  // stocker l'essentiel (inp + agrégats) pour recomposer fiches et consolidation
+  const it=lastResult;
+  DOSSIER.push({
+    id:it.id, dossier:it.inp.dossier||"", client:it.inp.client, bu:it.inp.bu, facility:it.inp.facility,
+    nature:it.inp.nature, amount:it.inp.amount, months:it.inp.months, rating:it.inp.rating, pcd:it.inp.pcd, rate:it.inp.rate,
+    inp:it.inp, res:it.res, hash:it.hash, date:it.date, dateISO:it.dateISO, pver:it.pver
+  });
+  await saveDossier();
+  renderDossier();
+  document.querySelector('nav button[data-tab="dossier"]').click();
+}
+function aggregateDossier(items){
+  let netIncome=0, capYears=0, el=0, avgEC=0, expo=0, revenues=0, fund=0, op=0, tax=0, capBenefit=0, feesTot=0, intTot=0, hurdleW=0;
+  for(const it of items){
+    const r=it.res;
+    netIncome+=r.netIncome; capYears+=r.capYears; el+=r.elLife; avgEC+=r.avgEC; expo+=it.amount;
+    revenues+=r.revenues; fund+=r.sumFund; op+=r.sumOp; tax+=r.tax; capBenefit+=r.capBenefit;
+    feesTot+=r.feeUpfront+r.sumFeeRun; intTot+=r.sumInt;
+    hurdleW+=r.hurdle*r.capYears;
+  }
+  const raroc=capYears>0?netIncome/capYears*100:0;
+  const hurdle=capYears>0?hurdleW/capYears:0;
+  const margin=raroc-hurdle;
+  const tol=(items[0]&&items[0].inp.tolerance)||2;
+  let dec="GO"; if(margin<0)dec=(margin>=-tol)?"COND":"NOGO";
+  return {raroc,hurdle,margin,dec,netIncome,capYears,el,avgEC,expo,revenues,fund,op,tax,capBenefit,feesTot,intTot,n:items.length};
+}
+function renderDossier(){
+  updateDossierCount();
+  if(!DOSSIER.length){
+    document.getElementById("noDossier").style.display="";
+    document.getElementById("dossierZone").style.display="none";
+    return;
+  }
+  document.getElementById("noDossier").style.display="none";
+  document.getElementById("dossierZone").style.display="block";
+  const agg=aggregateDossier(DOSSIER);
+  const vb=document.getElementById("dVerdictBox"); vb.className="verdict "+agg.dec;
+  document.getElementById("dVerdictTxt").textContent=decLabel(agg.dec)+" — dossier";
+  document.getElementById("dVerdictSub").textContent=
+    agg.dec==="GO"?"Le dossier crée de la valeur : le RAROC consolidé couvre le ROE cible."
+    :agg.dec==="COND"?"Dossier légèrement sous le butoir : arbitrages possibles entre facilités (prix, garanties)."
+    :"Le RAROC consolidé du dossier est insuffisant. Voir les facilités contributrices ci-dessous.";
+  const dref=(DOSSIER[0].dossier||DOSSIER[0].client||"Dossier");
+  document.getElementById("dVerdictRef").textContent=dref+" · "+agg.n+" facilité(s)";
+  document.getElementById("dk_raroc").textContent=fmtP(agg.raroc);
+  document.getElementById("dk_hurdle").textContent=fmtP(agg.hurdle,1);
+  document.getElementById("dk_margin").textContent=(agg.margin>=0?"+":"")+fmtP(agg.margin);
+  document.getElementById("dk_expo").textContent=fmtN(Math.round(agg.expo));
+  document.getElementById("dk_el").textContent=fmtN(Math.round(agg.el));
+  document.getElementById("dk_ec").textContent=fmtN(Math.round(agg.avgEC));
+  // table des facilités
+  let h="<thead><tr><th>Client / facilité</th><th>Nature</th><th class='num'>Montant</th><th class='num'>Mat.</th><th class='num'>RAROC</th><th>Décision</th><th class='num'>Perte att.</th><th class='num'>Capital moy.</th><th class='num'>Résultat net</th><th></th></tr></thead><tbody>";
+  DOSSIER.forEach((it,i)=>{
+    h+=`<tr><td>${esc(it.client)} — ${esc(it.facility)}</td><td>${esc(NATURES[it.nature].badge)}</td><td class="num">${fmtN(Math.round(it.amount))}</td><td class="num">${it.months}</td><td class="num">${it.res.raroc.toFixed(2)} %</td><td><span class="tagchip ${it.res.dec}">${decLabel(it.res.dec)}</span></td><td class="num">${fmtN(Math.round(it.res.elLife))}</td><td class="num">${fmtN(Math.round(it.res.avgEC))}</td><td class="num">${fmtN(Math.round(it.res.netIncome))}</td><td><button class="del" title="Retirer" onclick="removeFromDossier(${i})">×</button></td></tr>`;
+  });
+  h+=`<tr class="tot"><td colspan="2">DOSSIER (${agg.n})</td><td class="num">${fmtN(Math.round(agg.expo))}</td><td></td><td class="num">${agg.raroc.toFixed(2)} %</td><td><span class="tagchip ${agg.dec}">${decLabel(agg.dec)}</span></td><td class="num">${fmtN(Math.round(agg.el))}</td><td class="num">${fmtN(Math.round(agg.avgEC))}</td><td class="num">${fmtN(Math.round(agg.netIncome))}</td><td></td></tr></tbody>`;
+  document.getElementById("dossierTable").innerHTML=h;
+}
+async function removeFromDossier(i){ DOSSIER.splice(i,1); await saveDossier(); renderDossier(); }
+async function clearDossier(){
+  if(!DOSSIER.length)return;
+  if(!confirm("Vider le dossier en cours ? Les facilités déjà enregistrées au journal ne sont pas affectées."))return;
+  DOSSIER=[]; await saveDossier(); renderDossier();
+}
+function dossierFileBase(kind){
+  const d=DOSSIER[0]||{}; const dateISO=d.dateISO||new Date().toISOString().slice(0,10);
+  const agg=aggregateDossier(DOSSIER);
+  return `RAROC_DOSSIER_${kind}_${dateISO}_${sanitizeName(d.dossier||d.client)}_${agg.dec}`;
+}
+function printDossierConsolidated(){
+  if(!DOSSIER.length)return;
+  const agg=aggregateDossier(DOSSIER);
+  const d0=DOSSIER[0];
+  let facRows=DOSSIER.map(it=>`<tr><td>${esc(it.client)} — ${esc(it.facility)}</td><td>${NATURES[it.nature].badge}</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(it.amount))}</td><td style="text-align:right;font-family:monospace">${it.months}</td><td style="text-align:right;font-family:monospace">${it.res.raroc.toFixed(2)} %</td><td>${decLabel(it.res.dec)}</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(it.res.elLife))}</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(it.res.avgEC))}</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(it.res.netIncome))}</td></tr>`).join("");
+  document.getElementById("printReport").innerHTML=`
+    <h1>Rapport dossier RAROC — ${esc(d0.dossier||d0.client)}</h1>
+    <table><tr><td><b>Dossier</b> ${esc(d0.dossier||"—")}</td><td><b>Client</b> ${esc(d0.client)}</td><td><b>Filiale</b> ${esc(d0.bu)}</td><td><b>Date</b> ${esc(d0.date)}</td></tr>
+    <tr><td><b>Nombre de facilités</b> ${agg.n}</td><td><b>Exposition totale</b> ${fmtN(Math.round(agg.expo))}</td><td colspan="2"><b>Analyste</b> ${esc(d0.inp.user)}</td></tr></table>
+    <div class="pverdict pv-${agg.dec}">RECOMMANDATION DOSSIER : ${decLabel(agg.dec)} — RAROC consolidé ${agg.raroc.toFixed(2)} % vs butoir moyen ${agg.hurdle.toFixed(1)} % (marge ${(agg.margin>=0?"+":"")}${agg.margin.toFixed(2)} pt)</div>
+    <h2>Facilités du dossier</h2>
+    <table><thead><tr><th>Client / facilité</th><th>Bilan</th><th style="text-align:right">Montant</th><th style="text-align:right">Mat.</th><th style="text-align:right">RAROC</th><th>Décision</th><th style="text-align:right">Perte att.</th><th style="text-align:right">Capital moy.</th><th style="text-align:right">Résultat net</th></tr></thead>
+    <tbody>${facRows}<tr style="font-weight:700;background:#eef1ee"><td colspan="2">DOSSIER</td><td style="text-align:right">${fmtN(Math.round(agg.expo))}</td><td></td><td style="text-align:right">${agg.raroc.toFixed(2)} %</td><td>${decLabel(agg.dec)}</td><td style="text-align:right">${fmtN(Math.round(agg.el))}</td><td style="text-align:right">${fmtN(Math.round(agg.avgEC))}</td><td style="text-align:right">${fmtN(Math.round(agg.netIncome))}</td></tr></tbody></table>
+    <h2>Synthèse économique consolidée (sur la durée de vie)</h2>
+    <table>
+    <tr><td>Produits totaux (intérêts / commissions + frais)</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.revenues))}</td></tr>
+    <tr><td>Coût de la ressource</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.fund))}</td></tr>
+    <tr><td>Coûts opérationnels</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.op))}</td></tr>
+    <tr><td>Perte attendue</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.el))}</td></tr>
+    <tr><td>Impôt</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.tax))}</td></tr>
+    <tr><td>Rendement du capital</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.capBenefit))}</td></tr>
+    <tr style="font-weight:700"><td>Résultat net consolidé</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.netIncome))}</td></tr>
+    <tr><td>Capital-années (dénominateur du RAROC)</td><td style="text-align:right;font-family:monospace">${fmtN(Math.round(agg.capYears))}</td></tr>
+    </table>
+    <p style="margin-top:8px;font-size:9px;color:#555">RAROC consolidé = résultat net total ÷ capital-années total (moyenne pondérée par le capital, sans bénéfice de diversification — approche standard conservatrice). Fiches détaillées par facilité disponibles séparément.</p>
+    <div class="psig"><div>L'analyste</div><div>Le responsable des risques</div><div>Le comité</div></div>`;
+  const prev=document.title; document.title=dossierFileBase("CONSOLIDE");
+  const restore=()=>{document.title=prev;window.removeEventListener("afterprint",restore);};
+  window.addEventListener("afterprint",restore); window.print(); setTimeout(restore,2000);
+}
+function printDossierPerFacility(){
+  if(!DOSSIER.length)return;
+  let html="";
+  DOSSIER.forEach((it,idx)=>{
+    const saved=lastResult; lastResult=it;   // réutiliser le rendu de fiche existant
+    html+=(idx>0?'<div class="pbreak"></div>':'')+onePageFicheHTML(it);
+    lastResult=saved;
+  });
+  document.getElementById("printReport").innerHTML=html;
+  const prev=document.title; document.title=dossierFileBase("DETAILLE");
+  const restore=()=>{document.title=prev;window.removeEventListener("afterprint",restore);};
+  window.addEventListener("afterprint",restore); window.print(); setTimeout(restore,2000);
+}
+
+/* ══════════ NAVIGATION ══════════ */
+function showTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("show"));
+  document.getElementById("tab-"+id).classList.add("show");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+  if(id==="hist")loadHistory();
+  if(id==="dossier")renderDossier();
+}
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+
+(async function init(){
+  await loadParams();
+  await seedExamplesIfEmpty();
+  await loadHistory();
+  await loadDossier();
+})();
+</script>
+</body>
+</html>
